@@ -21,6 +21,7 @@
   --sans:'Instrument Sans',-apple-system,sans-serif;
   --r:6px;
 }
+/* System dark mode default */
 @media(prefers-color-scheme:dark){:root{
   --paper:#191610;--paper-2:#232019;--paper-3:#2c2820;
   --ink:#ece5d0;--ink-2:#b0a890;--ink-3:#7a7462;
@@ -31,6 +32,27 @@
   --bad:#d48080;--bad-bg:#2a1616;
   --premium:#d4aa60;--premium-bg:#2a1e08;
 }}
+/* Manual theme overrides — take precedence over media query */
+html[data-theme="light"]{
+  --paper:#f7f3ea;--paper-2:#ede7d9;--paper-3:#e3dcc9;
+  --ink:#1f1c15;--ink-2:#5c5749;--ink-3:#9c988c;
+  --rule:rgba(31,28,21,.11);--rule-2:rgba(31,28,21,.2);
+  --accent:#2e4a6b;--accent-bg:#dce8f5;
+  --good:#3a6128;--good-bg:#ddecd5;
+  --warn:#7a5618;--warn-bg:#f5e8cc;
+  --bad:#7a2828;--bad-bg:#f5d8d8;
+  --premium:#5a3e0e;--premium-bg:#f8edcc;
+}
+html[data-theme="dark"]{
+  --paper:#191610;--paper-2:#232019;--paper-3:#2c2820;
+  --ink:#ece5d0;--ink-2:#b0a890;--ink-3:#7a7462;
+  --rule:rgba(236,229,208,.1);--rule-2:rgba(236,229,208,.2);
+  --accent:#8fb4d8;--accent-bg:#192a3c;
+  --good:#8fc479;--good-bg:#182518;
+  --warn:#d4a657;--warn-bg:#2a2010;
+  --bad:#d48080;--bad-bg:#2a1616;
+  --premium:#d4aa60;--premium-bg:#2a1e08;
+}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
 .page{max-width:680px;margin:0 auto;padding:3rem 1.25rem 5rem}
@@ -60,10 +82,16 @@ h1{font-family:var(--serif);font-weight:500;font-variation-settings:"opsz" 96;fo
 .banner.level-up{background:var(--accent-bg);color:var(--accent)}
 .banner.level-down{background:var(--paper-2);color:var(--ink-2)}
 .banner.srs{background:var(--accent-bg);color:var(--accent);font-family:var(--serif);font-style:italic}
-.clue-area{margin-bottom:.75rem;min-height:180px}
-.clue{background:var(--paper-2);border-radius:var(--r);padding:14px 18px 16px;margin-bottom:10px;border-left:2px solid var(--rule-2);transition:background .25s,border-color .25s}
+/* Clue animations */
+@keyframes clue-in{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.clue-area{margin-bottom:.75rem;min-height:180px;position:relative}
+.clue{background:var(--paper-2);border-radius:var(--r);padding:14px 18px 16px;margin-bottom:10px;border-left:2px solid var(--rule-2);transition:background .25s,border-color .25s,opacity .3s}
+.clue.new{animation:clue-in .32s cubic-bezier(.22,.68,0,1.2)}
+.clue.dimmed{opacity:0.38;border-left-color:var(--rule)}
 .clue.flash-bad{background:var(--bad-bg);border-left-color:var(--bad)}
 .clue.flash-good{background:var(--good-bg);border-left-color:var(--good)}
+/* Motivational inline text */
+.motiv-inline{font-family:var(--serif);font-style:italic;color:var(--good);font-size:15px;margin-left:10px}
 .clue-label{font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-3);margin-bottom:4px;font-weight:500}
 .clue-body{font-family:var(--serif);font-size:17px;line-height:1.55}
 .guess-indicator{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--ink-2);margin-bottom:.75rem;padding:8px 12px;background:var(--paper-2);border-radius:var(--r)}
@@ -71,7 +99,7 @@ h1{font-family:var(--serif);font-weight:500;font-variation-settings:"opsz" 96;fo
 .guess-dot{width:9px;height:9px;border-radius:50%;background:var(--ink-2)}
 .guess-dot.used{background:var(--paper-3);border:1px solid var(--rule-2)}
 .guess-value{font-family:var(--serif);font-weight:500;color:var(--ink);font-size:13px}
-.input-row{display:flex;gap:8px;margin-bottom:8px}
+.input-row{display:flex;gap:8px;margin-bottom:4px}
 input[type="text"],input[type="password"]{flex:1;height:44px;padding:0 14px;background:var(--paper);color:var(--ink);border:1px solid var(--rule-2);border-radius:var(--r);font-family:var(--serif);font-size:17px;outline:none;transition:border-color .15s,box-shadow .15s}
 input::placeholder{color:var(--ink-3);font-style:italic}
 input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-bg)}
@@ -87,11 +115,11 @@ button:disabled{opacity:.35;cursor:not-allowed}
 .btn-ghost:hover:not(:disabled){background:var(--paper-2);border-color:var(--rule-2);color:var(--ink-2)}
 .guess-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
 .nav-row{display:flex;gap:8px;margin-bottom:.75rem}
-.session-row{display:flex;align-items:center;gap:12px}
+.session-row{display:flex;align-items:center;gap:8px}
 .spacer{flex:1}
 .end-link{font-size:13px;color:var(--ink-3);cursor:pointer;background:none;border:none;padding:0;font-family:var(--sans);height:auto;text-decoration:underline;text-underline-offset:3px}
 .end-link:hover{color:var(--ink-2)}
-.feedback{font-family:var(--serif);font-size:16px;min-height:26px;margin-bottom:.5rem;line-height:1.5}
+.feedback{font-family:var(--serif);font-size:16px;min-height:26px;margin-bottom:.5rem;line-height:1.5;margin-top:.75rem}
 .feedback.good{color:var(--good)}.feedback.bad{color:var(--bad)}.feedback.warn{color:var(--warn)}.feedback.neutral{color:var(--ink-2)}
 .answer-word{font-style:italic;font-weight:500}
 .tts-btn{background:none;border:none;padding:0 0 0 6px;cursor:pointer;color:var(--ink-3);height:auto;display:inline-flex;align-items:center;vertical-align:middle}
@@ -99,6 +127,7 @@ button:disabled{opacity:.35;cursor:not-allowed}
 .etymology{margin-top:.75rem;padding:14px 18px;background:var(--paper-2);border-left:2px solid var(--accent);border-radius:0 var(--r) var(--r) 0;font-family:var(--serif);font-size:15px;line-height:1.6;color:var(--ink-2)}
 .ety-label{font-family:var(--sans);font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-3);margin-bottom:4px;font-weight:500}
 .ety-body{font-style:italic}
+
 .word-swap{margin-top:1rem;padding:18px 20px;border:1px solid var(--rule-2);border-radius:var(--r);background:var(--paper-2)}
 .ws-label{font-family:var(--sans);font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-3);font-weight:500;margin-bottom:10px}
 .ws-sentence{font-family:var(--serif);font-size:17px;line-height:1.7;margin-bottom:12px}
@@ -122,9 +151,36 @@ button:disabled{opacity:.35;cursor:not-allowed}
 .s-note a{color:var(--accent)}
 .s-row{display:flex;gap:8px}
 .settings-panel input{font-family:var(--sans);font-size:14px}
-.diff-chooser{display:flex;gap:6px;flex-wrap:wrap}
-.diff-opt{height:36px;padding:0 16px;font-size:13px;border-radius:999px}
-.diff-opt.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+/* Shared dot-picker (difficulty + speed) */
+.dot-picker{display:flex;align-items:flex-start;justify-content:space-between;position:relative;margin-top:8px;padding-bottom:2px}
+.dot-picker::before{content:'';position:absolute;top:9px;left:9px;right:9px;height:2px;background:var(--rule-2);z-index:0}
+.dp-dot{display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:none;height:auto;padding:0;cursor:pointer;position:relative;z-index:1;flex:1;transition:none}
+.dp-dot:disabled{opacity:.35;cursor:not-allowed}
+.dp-dot:not(:disabled):hover .dp-circle{border-color:var(--ink-2)}
+.dp-circle{width:20px;height:20px;border-radius:50%;border:2px solid var(--ink-3);background:var(--paper);display:block;transition:background .15s,border-color .15s,transform .12s}
+.dp-dot.active .dp-circle{background:var(--ink);border-color:var(--ink);transform:scale(1.15)}
+.dp-dot.active .dp-name{color:var(--ink);font-weight:600}
+.dp-name{font-size:10px;color:var(--ink-3);text-align:center;font-family:var(--sans);line-height:1.3}
+/* Difficulty picker */
+.diff-picker-current{font-family:var(--serif);font-size:15px;font-weight:500;margin-top:10px;color:var(--ink)}
+.diff-picker-current .diff-clue-note{font-family:var(--sans);font-size:11px;font-weight:400;color:var(--ink-3);margin-left:6px}
+/* Speed picker (inline) */
+.speed-inline{display:none;align-items:center;gap:14px;margin-top:.75rem;padding:12px 16px;background:var(--paper-2);border-radius:var(--r);border:1px solid var(--rule)}
+.sp-label{font-size:11px;color:var(--ink-3);white-space:nowrap;display:flex;align-items:center;gap:5px;flex-shrink:0}
+/* Rounds chooser */
+.rounds-chooser{display:flex;gap:6px;flex-wrap:wrap}
+.rounds-opt{height:36px;padding:0 16px;font-size:13px;border-radius:999px}
+.rounds-opt.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+/* Theme toggle */
+.theme-toggle{background:none;border:1px solid var(--rule-2);border-radius:999px;width:34px;height:34px;padding:0;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-3);flex-shrink:0;font-size:15px;line-height:1}
+.theme-toggle:hover:not(:disabled){background:var(--paper-2);border-color:var(--ink-3);color:var(--ink-2)}
+/* Keyboard hint */
+.kbd-hint{font-size:11px;color:var(--ink-3);text-align:center;margin-bottom:.5rem;transition:opacity .3s}
+kbd{display:inline-block;padding:1px 5px;background:var(--paper-2);border:1px solid var(--rule-2);border-bottom-width:2px;border-radius:3px;font-size:10px;font-family:var(--sans);color:var(--ink-2)}
+/* Copy word button on end screen */
+.wc-copy{background:none;border:1px solid var(--rule-2);padding:1px 8px;height:auto;font-size:11px;color:var(--ink-3);cursor:pointer;border-radius:3px;line-height:1.6}
+.wc-copy:hover:not(:disabled){background:var(--paper-3);color:var(--ink);border-color:var(--ink-3)}
+/* End screen */
 .end-screen{padding:1rem 0}
 .end-title{font-family:var(--serif);font-size:34px;font-weight:500;font-variation-settings:"opsz" 96;margin-bottom:.5rem;text-align:center}
 .end-sub{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--ink-2);margin-bottom:2rem;text-align:center}
@@ -133,12 +189,23 @@ button:disabled{opacity:.35;cursor:not-allowed}
 .stat-card-label{font-size:10px;text-transform:uppercase;letter-spacing:.15em;color:var(--ink-3);margin-bottom:6px}
 .stat-card-value{font-family:var(--serif);font-size:24px;font-weight:500;font-variation-settings:"opsz" 144}
 .lvl-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem}
+/* Session chart */
+.end-chart-section{margin-bottom:2rem}
+.end-chart-title{font-family:var(--serif);font-weight:500;font-size:20px;margin-bottom:1rem}
+.chart-wrap{display:flex;align-items:flex-end;gap:5px;height:90px}
+.chart-bar{flex:1;border-radius:4px 4px 0 0;background:var(--accent-bg);position:relative;min-height:4px;transition:height .5s ease}
+.chart-bar.cb-pass{background:var(--warn-bg)}
+.chart-bar.cb-miss{background:var(--bad-bg)}
+.chart-num{position:absolute;bottom:calc(100% + 3px);left:50%;transform:translateX(-50%);font-size:10px;color:var(--ink-3);white-space:nowrap}
+.chart-labels{display:flex;gap:5px;margin-top:5px}
+.chart-label{flex:1;font-size:10px;color:var(--ink-3);text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Wrong words */
 .wrong-section{margin-bottom:2rem}
 .wrong-section h3{font-family:var(--serif);font-weight:500;font-size:20px;margin-bottom:1rem}
 .wrong-card{background:var(--paper-2);border-radius:var(--r);padding:16px 18px;margin-bottom:10px;border-left:2px solid var(--bad)}
 .wrong-card.passed{border-left-color:var(--warn)}
 .wrong-card.struggled{border-left-color:var(--ink-3)}
-.wc-head{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+.wc-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
 .wc-word{font-family:var(--serif);font-style:italic;font-size:20px;font-weight:500}
 .wc-badge{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;padding:2px 8px;border-radius:999px}
 .wc-badge.missed{background:var(--bad-bg);color:var(--bad)}
@@ -151,21 +218,68 @@ button:disabled{opacity:.35;cursor:not-allowed}
 .page-footer{text-align:center;margin-top:4rem;font-family:var(--serif);font-style:italic;font-size:13px;color:var(--ink-3)}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .syl-text{font-family:var(--serif);font-style:italic;color:var(--ink-3);font-size:14px;letter-spacing:.04em;margin-right:2px;vertical-align:middle}
-.rounds-chooser{display:flex;gap:6px;flex-wrap:wrap}
-.rounds-opt{height:36px;padding:0 16px;font-size:13px;border-radius:999px}
-.rounds-opt.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.speed-row{display:flex;align-items:center;gap:12px}
-.speed-slider{flex:1;accent-color:var(--ink-2);cursor:pointer}
-.speed-val{font-family:var(--serif);font-size:14px;color:var(--ink-2);min-width:30px;text-align:right}
-@media(max-width:480px){.page{padding:2rem 1rem 3rem}h1{font-size:36px}.guess-row{grid-template-columns:1fr}.gh-stats{gap:14px}.stat-value{font-size:19px}}
+/* Confetti canvas */
+#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;display:none}
+/* ── Shop ── */
+.bank-display{font-family:var(--serif);font-size:13px;color:var(--ink-2);margin-top:3px;text-align:right}
+.bank-display strong{color:var(--ink);font-weight:500}
+.shop-btn{height:34px;padding:0 10px;font-size:13px}
+.shop-panel{margin-top:1.25rem;padding:20px;background:var(--paper-2);border-radius:var(--r);border:1px solid var(--rule-2)}
+.shop-panel h3{font-family:var(--serif);font-weight:500;font-size:18px;margin-bottom:4px}
+.shop-bank{font-family:var(--serif);font-size:15px;color:var(--ink-2);margin-bottom:1.25rem}
+.shop-bank strong{color:var(--ink)}
+.mod-section-label{font-size:10px;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-3);font-weight:500;margin-bottom:10px;margin-top:1.25rem}
+.mod-section-label:first-of-type{margin-top:0}
+.mod-sub{font-size:12px;color:var(--ink-3);margin-bottom:10px}
+.mod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:.75rem}
+.mod-card{background:var(--paper);border:1px solid var(--rule-2);border-radius:var(--r);padding:14px 15px;display:flex;flex-direction:column;gap:8px;transition:border-color .15s}
+.mod-card.buff{border-left:3px solid var(--good)}
+.mod-card.curse{border-left:3px solid var(--warn)}
+.mod-card.lifeline{border-left:3px solid var(--accent)}
+.mod-card.equipped{background:var(--good-bg);border-color:var(--good)}
+.mod-card-top{display:flex;justify-content:space-between;align-items:baseline;gap:6px}
+.mod-name{font-family:var(--serif);font-weight:500;font-size:15px}
+.mod-cost{font-size:11px;color:var(--ink-3);white-space:nowrap;flex-shrink:0}
+.mod-cost.reward{color:var(--good)}
+.mod-desc{font-size:12px;color:var(--ink-2);line-height:1.5;flex:1}
+.mod-btn{height:32px;padding:0 12px;font-size:12px;align-self:flex-start;border-radius:var(--r)}
+.mod-btn.equipped{background:var(--good);color:#fff;border-color:var(--good)}
+.mod-btn:disabled{opacity:.35;cursor:not-allowed}
+/* Lifelines bar */
+.lifelines-bar{margin-bottom:.75rem;padding:10px 12px;background:var(--accent-bg);border-radius:var(--r);border:1px solid rgba(46,74,107,.15)}
+.lifelines-bar-label{font-size:10px;text-transform:uppercase;letter-spacing:.15em;color:var(--accent);font-weight:500;margin-bottom:8px}
+.lifelines-bar-btns{display:flex;gap:6px;flex-wrap:wrap}
+.ll-btn{height:32px;padding:0 12px;font-size:12px;background:var(--paper);border-color:var(--accent);color:var(--accent);border-radius:999px}
+.ll-btn:hover:not(:disabled){background:var(--accent);color:#fff}
+.ll-hint{font-size:12px;color:var(--ink-3);font-style:italic;font-family:var(--serif);margin-top:6px}
+/* Speed timer */
+.speed-timer{display:none;align-items:center;gap:10px;margin-bottom:.75rem;padding:8px 12px;background:var(--paper-2);border-radius:var(--r)}
+.timer-track{flex:1;height:5px;background:var(--paper-3);border-radius:999px;overflow:hidden}
+.timer-fill{height:100%;background:var(--accent);border-radius:999px;transition:width 1s linear;width:100%}
+.timer-fill.urgent{background:var(--bad)}
+.timer-count{font-family:var(--serif);font-size:13px;color:var(--ink-2);min-width:28px;text-align:right;font-weight:500}
+/* Active mod badge */
+.active-mod-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em}
+.active-mod-badge.buff{background:var(--good-bg);color:var(--good)}
+.active-mod-badge.curse{background:var(--warn-bg);color:var(--warn)}
+@media(max-width:480px){
+  .page{padding:2rem 1rem 3rem}
+  h1{font-size:36px}
+  .guess-row{grid-template-columns:1fr}
+  .gh-stats{gap:14px}
+  .stat-value{font-size:19px}
+  .diff-slider-labels span{font-size:9px}
+  .mod-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
+<canvas id="confetti-canvas"></canvas>
 <main class="page">
   <header class="masthead">
     <div class="eyebrow">A vocabulary game</div>
     <h1>Word Pinpoint</h1>
-    <p class="deck">Five clues per word. More guesses on early clues, fewer as hints get richer.</p>
+    <p class="deck" id="deck-text">Clues per word depend on your level. Guess earlier for more points.</p>
   </header>
   <section class="game" aria-label="Game area">
     <h2 class="sr-only">Game</h2>
@@ -181,6 +295,7 @@ button:disabled{opacity:.35;cursor:not-allowed}
       <div class="gh-stats">
         <div><div class="stat-label">Score</div><div class="stat-value" id="score">0</div></div>
         <div><div class="stat-label">Streak</div><div class="stat-value" id="streak">0</div></div>
+        <div><div class="stat-label">Bank</div><div class="stat-value" id="bank-stat" style="font-size:16px">0</div></div>
       </div>
     </div>
     <div class="progress-wrap">
@@ -189,7 +304,14 @@ button:disabled{opacity:.35;cursor:not-allowed}
     </div>
     <div id="srs-banner" class="banner srs" style="display:none"></div>
     <div id="level-banner" class="banner" style="display:none"></div>
+    <!-- Speed Run timer -->
+    <div id="speed-timer" class="speed-timer">
+      <div class="timer-track"><div class="timer-fill" id="timer-fill"></div></div>
+      <span id="timer-count" class="timer-count">20s</span>
+    </div>
     <div id="clue-area" class="clue-area"></div>
+    <!-- Lifelines bar -->
+    <div id="lifelines-bar" style="display:none"></div>
     <div id="guess-indicator" class="guess-indicator">
       <div class="guess-dots" id="guess-dots"></div>
       <div class="guess-value" id="guess-value"></div>
@@ -197,6 +319,7 @@ button:disabled{opacity:.35;cursor:not-allowed}
     <div class="input-row">
       <input id="guess" type="text" placeholder="Type your guess&hellip;" autocomplete="off" autocapitalize="none" spellcheck="false">
     </div>
+    <div class="kbd-hint" id="kbd-hint">Press <kbd>Enter</kbd> to guess &nbsp;&middot;&nbsp; <kbd>Enter</kbd> again to advance</div>
     <div class="guess-row">
       <button id="standard-btn" class="btn-primary">Guess</button>
       <button id="premium-btn" class="btn-premium">Premium guess (&minus;2 pts)</button>
@@ -206,15 +329,31 @@ button:disabled{opacity:.35;cursor:not-allowed}
       <button id="pass-btn">Pass</button>
     </div>
     <div class="session-row">
-      <button id="settings-btn" class="btn-ghost" style="height:36px;padding:0 12px;font-size:13px">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:5px"><path d="M19.14,12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24,0-.43.17-.47.41l-.36,2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47,0-.59.22L2.74,8.87c-.12.21-.08.47.12.61l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s.02.64.07.94l-2.03,1.58c-.18.14-.23.41-.12.61l1.92,3.32c.12.22.37.29.59.22l2.39-.96c.5.38,1.03.7,1.62.94l.36,2.54c.05.24.24.41.48.41h3.84c.24,0,.44-.17.47-.41l.36-2.54c.59-.24,1.13-.57,1.62-.94l2.39.96c.22.08.47,0,.59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12,15.6c-1.98,0-3.6-1.62-3.6-3.6s1.62-3.6,3.6-3.6,3.6,1.62,3.6,3.6-1.62,3.6-3.6,3.6z"/></svg>Settings
+      <button id="settings-btn" class="btn-ghost" style="height:34px;padding:0 10px;font-size:13px">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px"><path d="M19.14,12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24,0-.43.17-.47.41l-.36,2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47,0-.59.22L2.74,8.87c-.12.21-.08.47.12.61l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s.02.64.07.94l-2.03,1.58c-.18.14-.23.41-.12.61l1.92,3.32c.12.22.37.29.59.22l2.39-.96c.5.38,1.03.7,1.62.94l.36,2.54c.05.24.24.41.48.41h3.84c.24,0,.44-.17.47-.41l.36-2.54c.59-.24,1.13-.57,1.62-.94l2.39.96c.22.08.47,0,.59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12,15.6c-1.98,0-3.6-1.62-3.6-3.6s1.62-3.6,3.6-3.6,3.6,1.62,3.6,3.6-1.62,3.6-3.6,3.6z"/></svg>Settings
       </button>
+      <button id="shop-btn" class="btn-ghost shop-btn">🛒 Shop</button>
+      <button id="theme-toggle" class="theme-toggle" title="Toggle light/dark mode" aria-label="Toggle theme">☀</button>
       <div class="spacer"></div>
       <button class="end-link" id="end-btn">End session</button>
     </div>
-    <div id="feedback" class="feedback neutral" style="margin-top:.75rem"></div>
+    <div id="feedback" class="feedback neutral"></div>
     <div id="etymology" style="display:none">
       <div class="etymology"><div class="ety-label">Etymology</div><div class="ety-body" id="ety-body"></div></div>
+    </div>
+    <!-- Inline TTS speed dot-picker — visible after word reveal -->
+    <div id="speed-inline" class="speed-inline">
+      <div class="sp-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+        Speed
+      </div>
+      <div class="dot-picker" id="speed-picker" style="flex:1">
+        <button class="dp-dot" data-rate="0.5"><span class="dp-circle"></span><span class="dp-name">Slow</span></button>
+        <button class="dp-dot" data-rate="0.75"><span class="dp-circle"></span><span class="dp-name">&times;0.75</span></button>
+        <button class="dp-dot" data-rate="1"><span class="dp-circle"></span><span class="dp-name">Normal</span></button>
+        <button class="dp-dot" data-rate="1.25"><span class="dp-circle"></span><span class="dp-name">&times;1.25</span></button>
+        <button class="dp-dot" data-rate="1.5"><span class="dp-circle"></span><span class="dp-name">Fast</span></button>
+      </div>
     </div>
     <div id="word-swap-area" style="display:none"></div>
     <div id="round-nav" class="round-nav" style="display:none">
@@ -226,13 +365,14 @@ button:disabled{opacity:.35;cursor:not-allowed}
         <div class="s-sec">
           <div class="s-head">Starting difficulty</div>
           <div class="s-sub">Controls how many clues you receive and how much each answer is worth. The adaptive system adjusts from here during play.</div>
-          <div class="diff-chooser" id="diff-chooser">
-            <button class="diff-opt" data-d="super_easy">Super Easy (7 clues)</button>
-            <button class="diff-opt" data-d="easy">Easy (6 clues)</button>
-            <button class="diff-opt" data-d="medium">Medium (5 clues)</button>
-            <button class="diff-opt" data-d="hard">Hard (4 clues)</button>
-            <button class="diff-opt" data-d="ultra_hard">Ultra Hard (3 clues)</button>
+          <div class="dot-picker" id="diff-picker">
+            <button class="dp-dot" data-d="super_easy"><span class="dp-circle"></span><span class="dp-name">Super Easy</span></button>
+            <button class="dp-dot" data-d="easy"><span class="dp-circle"></span><span class="dp-name">Easy</span></button>
+            <button class="dp-dot" data-d="medium"><span class="dp-circle"></span><span class="dp-name">Medium</span></button>
+            <button class="dp-dot" data-d="hard"><span class="dp-circle"></span><span class="dp-name">Hard</span></button>
+            <button class="dp-dot" data-d="ultra_hard"><span class="dp-circle"></span><span class="dp-name">Ultra Hard</span></button>
           </div>
+          <div class="diff-picker-current" id="diff-current">Easy <span class="diff-clue-note">6 clues</span></div>
           <div class="s-note" id="diff-lock-note"></div>
         </div>
         <div class="s-sec">
@@ -246,28 +386,12 @@ button:disabled{opacity:.35;cursor:not-allowed}
           <div class="s-note" id="rounds-lock-note"></div>
         </div>
         <div class="s-sec">
-          <div class="s-head">Speech speed</div>
-          <div class="speed-row">
-            <span style="font-size:12px;color:var(--ink-3)">Slow</span>
-            <input type="range" id="tts-speed" class="speed-slider" min="0.5" max="1.5" step="0.25" value="0.82">
-            <span style="font-size:12px;color:var(--ink-3)">Fast</span>
-            <span class="speed-val" id="speed-val">&#xd7;0.8</span>
-          </div>
-        </div>
-        <div class="s-sec">
-          <div class="s-head">Word database URL</div>
-          <div class="s-sub">Point to a hosted <code>words.json</code> to unlock hundreds of words. The database is cached locally for 7 days.</div>
-          <div class="s-row">
-            <input type="text" id="words-url-input" placeholder="https://…/words.json" style="flex:1;font-family:var(--sans);font-size:13px">
-            <button id="save-words-url-btn">Load</button>
-          </div>
-          <div class="s-note" id="words-db-note"></div>
-        </div>
+          <div class="s-head">Gemini API key <span style="font-size:11px;font-weight:400;color:var(--ink-3)">(for Word Swap Drill)</span></div>
           <div class="s-row">
             <input type="password" id="api-key-input" placeholder="AIza&hellip;" style="flex:1">
             <button id="save-api-btn">Save</button>
           </div>
-          <div class="s-note">Free key at <a href="https://aistudio.google.com" target="_blank" rel="noopener">aistudio.google.com</a> &mdash; sign in with Google, no card needed. 1,500 requests/day free.</div>
+          <div class="s-note">Free key at <a href="https://aistudio.google.com" target="_blank" rel="noopener">aistudio.google.com</a> &mdash; sign in with Google, no card needed.</div>
         </div>
         <div class="s-sec">
           <div class="s-head">Spaced repetition</div>
@@ -275,12 +399,16 @@ button:disabled{opacity:.35;cursor:not-allowed}
         </div>
       </div>
     </div>
-    <div id="end-screen" style="display:none"></div>
-    <div id="footer-note" class="footer-note">
-      Guesses per clue: 3 &rarr; 2 &rarr; 2 &rarr; 1 &rarr; 1 &nbsp;&middot;&nbsp; Wrong free guesses cost nothing &middot; streak safe<br>
-      Premium guess: &minus;2 pts for one extra attempt on any clue &nbsp;&middot;&nbsp; wrong = lose the 2 pts &nbsp;&middot;&nbsp; correct = earn face value<br>
-      Streak resets only on pass or miss
+    <!-- Shop panel -->
+    <div id="shop-panel" style="display:none">
+      <div class="shop-panel">
+        <h3>Modifier Shop</h3>
+        <div class="shop-bank">Bank: <strong id="shop-bank-val">0</strong> pts</div>
+        <div id="shop-content"></div>
+      </div>
     </div>
+    <div id="end-screen" style="display:none"></div>
+    <div id="footer-note" class="footer-note"></div>
   </section>
   <footer class="page-footer">Built as a study tool. Difficulty adapts to your performance.</footer>
 </main>
@@ -290,7 +418,6 @@ const LEVELS=['super_easy','easy','medium','hard','ultra_hard'];
 const VOCAB_TIER={super_easy:'easy',easy:'easy',medium:'medium',hard:'hard',ultra_hard:'hard'};
 const DIFF_LABEL={super_easy:'Super Easy',easy:'Easy',medium:'Medium',hard:'Hard',ultra_hard:'Ultra Hard'};
 const CLUE_COUNT={super_easy:7,easy:6,medium:5,hard:4,ultra_hard:3};
-// Free guesses allowed per clue position, per difficulty
 const GUESSES={
   super_easy:[3,2,2,2,1,1,1],
   easy:      [3,2,2,2,1,1],
@@ -298,7 +425,6 @@ const GUESSES={
   hard:      [2,2,1,1],
   ultra_hard:[2,1,1]
 };
-// Points for correct answer at each clue position, per difficulty
 const FV={
   super_easy:[4,3,2,2,1,1,1],
   easy:      [5,4,3,2,1,1],
@@ -374,7 +500,7 @@ const loadCfg=()=>{try{return JSON.parse(localStorage.getItem(CFG_KEY)||'{}')}ca
 const saveCfg=d=>{try{localStorage.setItem(CFG_KEY,JSON.stringify(d))}catch{}};
 const getApiKey=()=>loadCfg().apiKey||'';
 const setApiKey=k=>{const c=loadCfg();c.apiKey=k;saveCfg(c)};
-const getStartDiff=()=>{const d=loadCfg().startDiff||'medium';return LEVELS.includes(d)?d:'medium'};
+const getStartDiff=()=>{const d=loadCfg().startDiff||'easy';return LEVELS.includes(d)?d:'easy'};
 const setStartDiff=d=>{const c=loadCfg();c.startDiff=d;saveCfg(c)};
 const getTotalRounds=()=>loadCfg().totalRounds||10;
 const setTotalRounds=n=>{const c=loadCfg();c.totalRounds=n;saveCfg(c)};
@@ -382,8 +508,11 @@ const getTTSRate=()=>loadCfg().ttsRate||0.82;
 const setTTSRate=r=>{const c=loadCfg();c.ttsRate=r;saveCfg(c)};
 const getWordsUrl=()=>loadCfg().wordsUrl||'https://cnick23.github.io/word-pinpoint-db/words.json';
 const setWordsUrl=u=>{const c=loadCfg();c.wordsUrl=u;saveCfg(c)};
+const getThemePref=()=>loadCfg().theme||'';
+const setThemePref=t=>{const c=loadCfg();c.theme=t;saveCfg(c)};
 const WORDS_CACHE_KEY='wp-words-v1';
-const WORDS_CACHE_TTL=7*24*3600*1000; // 7 days
+const WORDS_CACHE_TTL=7*24*3600*1000;
+
 function getDueWords(){const s=loadSRS(),n=Date.now();return Object.entries(s).filter(([,v])=>v.dueDate<=n).map(([k])=>k)}
 function scheduleWord(key,out){
   const s=loadSRS(),n=Date.now(),e=s[key]||{interval:1,dueDate:n,lapses:0};
@@ -394,42 +523,45 @@ function scheduleWord(key,out){
   e.dueDate=n+e.interval*DAY;s[key]=e;saveSRS(s);
 }
 
-/* ── Clue helpers ── */
-// Always return the tier's full clue count — synthetic clues fill any gap
-function getClueCount(word,diff){return CLUE_COUNT[diff]||5}
+/* ── Theme ── */
+function applyTheme(pref){
+  if(pref==='dark'){document.documentElement.dataset.theme='dark';$('theme-toggle').textContent='☀'}
+  else if(pref==='light'){document.documentElement.dataset.theme='light';$('theme-toggle').textContent='☾'}
+  else{delete document.documentElement.dataset.theme;
+    const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+    $('theme-toggle').textContent=isDark?'☀':'☾';
+  }
+}
+function toggleTheme(){
+  const cur=getThemePref();
+  const isDark=document.documentElement.dataset.theme==='dark'||(cur===''&&window.matchMedia('(prefers-color-scheme:dark)').matches);
+  const next=isDark?'light':'dark';
+  setThemePref(next);applyTheme(next);
+}
 
-// Get the clue text at display position idx (1-indexed) for this word+difficulty
+/* ── Clue helpers ── */
+function getClueCount(word,diff){return CLUE_COUNT[diff]||5}
 function getClueText(word,diff,idx){
   const total=getClueCount(word,diff);
-  const contentClues=word.clues.slice(0,-1); // all real clues except letter count
+  const contentClues=word.clues.slice(0,-1);
   const letterClue=word.clues[word.clues.length-1];
   const w=word.word,n=w.length;
   const first=w[0].toUpperCase(),last=w[n-1].toUpperCase();
-  // Synthetic clues — each adds genuinely new information
   const synBank=[
     `The word starts with the letter '${first}'.`,
     `Letter pattern: ${first}${'_ '.repeat(n-1).trim()} \u2014 ${n} letters total.`,
     `The word ends with the letter '${last}'.`
   ];
-  // How many extra positions this tier needs beyond what the word supplies
   const synthNeeded=Math.max(0,total-word.clues.length);
-  // \u2460 Last position — checked first so content clues can't bleed past the end
   if(idx>=total){
-    // super_easy (synthNeeded=2): last clue = ending letter, genuinely new vs pattern
     if(synthNeeded===2)return synBank[2];
-    return letterClue; // all other tiers: real letter-count clue
+    return letterClue;
   }
-  // \u2461 Real content clue exists at this position
   if(idx-1<contentClues.length)return contentClues[idx-1];
-  // \u2462 Gap position — fill with synthetic in order
   const synIdx=idx-1-contentClues.length;
   return synBank[synIdx]||letterClue;
 }
-
-// Get the definition clue (clue starting with "Means:")
-function getDefClue(word){
-  return word.clues.find(c=>c.startsWith('Means:'))||word.clues[1];
-}
+function getDefClue(word){return word.clues.find(c=>c.startsWith('Means:'))||word.clues[1]}
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=0|Math.random()*(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
 const range=n=>Array.from({length:n},(_,i)=>i);
 const norm=s=>s.toLowerCase().trim().replace(/[^a-z]/g,'');
@@ -448,19 +580,21 @@ const S={
   totalRounds:10,
   queues:{easy:[],medium:[],hard:[]},cursor:{easy:0,medium:0,hard:0},
   word:null,tier:'easy',
-  clue:1,          // current clue shown (1-5)
-  freeUsed:0,      // wrong free guesses on current clue
-  hadWrong:false,  // any wrong guess this round (free or premium)
-  usedPremium:false,
+  clue:1,freeUsed:0,hadWrong:false,usedPremium:false,
   score:0,streak:0,best:0,
   played:0,solved:0,perfect:0,
   recent:[],roundsAt:{super_easy:0,easy:0,medium:0,hard:0,ultra_hard:0},
   locked:false,srsQ:[],inSRS:false,
-  wrongWords:[]
+  wrongWords:[],
+  clueHits:[0,0,0,0,0,0,0,0], // index = clue number (1-based)
+  missCount:0,passCount:0
 };
 
 /* ── Init ── */
 async function init(){
+  applyTheme(getThemePref());
+  S.bank=getBank();S.equippedMod=getEquipped();S._prevScore=0;
+  updateBankDisplay();
   S.difficulty=getStartDiff();
   S.totalRounds=getTotalRounds();
   S.queues={easy:shuffle(range(TIERS.easy.length)),medium:shuffle(range(TIERS.medium.length)),hard:shuffle(range(TIERS.hard.length))};
@@ -471,27 +605,24 @@ async function init(){
     S.srsQ=pairs;
     if(pairs.length){$('srs-banner').textContent=`Review: ${pairs.length} word${pairs.length>1?'s':''} due from past sessions — appearing first.`;$('srs-banner').style.display='block'}
   }
-  refreshDiffBtns();refreshRoundsBtns();
+  refreshDiffPicker();refreshRoundsBtns();
   $('api-key-input').value=getApiKey();
-  const rate=getTTSRate();$('tts-speed').value=rate;$('speed-val').textContent=`\u00d7${rate.toFixed(2).replace(/\.?0+$/,'')}`;
-  $('words-url-input').value=getWordsUrl();
-  // Load external word database (non-blocking — game starts with built-ins immediately)
+  refreshSpeedPicker();
   loadWordsDB().then(()=>rebuildQueues());
   pickWord();render();focus();
 }
 
+const fmtRate=r=>r.toFixed(2).replace(/\.?0+$/,'');
+
 async function loadWordsDB(){
-  // 1. Check cache
   try{
     const cached=localStorage.getItem(WORDS_CACHE_KEY);
     if(cached){
       const{ts,data}=JSON.parse(cached);
-      if(Date.now()-ts<WORDS_CACHE_TTL){applyWordData(data);showDbStatus('cache');return}
+      if(Date.now()-ts<WORDS_CACHE_TTL){applyWordData(data);return}
     }
   }catch{}
-  // 2. Fetch from URL
-  const url=getWordsUrl();
-  if(!url)return;
+  const url=getWordsUrl();if(!url)return;
   try{
     const r=await fetch(url);
     if(!r.ok)throw new Error(`HTTP ${r.status}`);
@@ -499,39 +630,20 @@ async function loadWordsDB(){
     if(!data.easy||!data.medium||!data.hard)throw new Error('Invalid format');
     localStorage.setItem(WORDS_CACHE_KEY,JSON.stringify({ts:Date.now(),data}));
     applyWordData(data);
-    showDbStatus('fresh');
-  }catch(e){
-    showDbStatus('error',e.message);
-  }
+  }catch(e){console.warn('Word database:',e.message)}
 }
-
 function applyWordData(data){
-  if(data.easy?.length) TIERS.easy=data.easy;
-  if(data.medium?.length) TIERS.medium=data.medium;
-  if(data.hard?.length) TIERS.hard=data.hard;
+  if(data.easy?.length)TIERS.easy=data.easy;
+  if(data.medium?.length)TIERS.medium=data.medium;
+  if(data.hard?.length)TIERS.hard=data.hard;
 }
-
 function rebuildQueues(){
   if(S.played===0){
     S.queues={easy:shuffle(range(TIERS.easy.length)),medium:shuffle(range(TIERS.medium.length)),hard:shuffle(range(TIERS.hard.length))};
     S.cursor={easy:0,medium:0,hard:0};
     pickWord();render();
   }
-  updateDbNote();
 }
-
-function showDbStatus(type,msg){
-  const note=$('words-db-note');
-  if(type==='cache')note.textContent=`\u2713 Using cached database (${countWords()} words total).`;
-  else if(type==='fresh')note.textContent=`\u2713 Database loaded (${countWords()} words total).`;
-  else note.textContent=`\u26a0 Could not load database: ${msg}. Using built-in words.`;
-}
-
-function updateDbNote(){
-  const note=$('words-db-note');
-  if(note.textContent==='')note.textContent=`${countWords()} words loaded.`;
-}
-
 function countWords(){return TIERS.easy.length+TIERS.medium.length+TIERS.hard.length}
 
 function pickWord(){
@@ -544,27 +656,71 @@ function pickWord(){
   S.clue=1;S.freeUsed=0;S.hadWrong=false;S.usedPremium=false;S.locked=false;
 }
 
+/* ── Motivational inline ── */
+function getMotivMsg(clue,hadWrong,maxClues){
+  if(clue===1&&!hadWrong)return'Brilliant!';
+  if(clue===1)return'Got it!';
+  if(clue>=maxClues)return'You got there!';
+  const mid=['Excellent!','Sharp!','Nice work!','Good job!','Almost!'];
+  const span=maxClues-2,pos=clue-2;
+  const idx=span<=1?Math.floor(mid.length/2):Math.round(pos/(span-1)*(mid.length-1));
+  return mid[Math.min(idx,mid.length-1)];
+}
+function showMotivInline(msg){
+  const clueEl=$('clue-'+(S.clue-1));if(!clueEl)return;
+  const body=clueEl.querySelector('.clue-body');if(!body)return;
+  body.querySelectorAll('.motiv-inline').forEach(e=>e.remove());
+  if(!msg)return;
+  const span=document.createElement('span');
+  span.className='motiv-inline';span.textContent='\u00b7 '+msg;
+  body.appendChild(span);
+}
+
+/* ── Dynamic info ── */
+const SP_RATES=[0.5,0.75,1,1.25,1.5];
+const SP_LABELS=['Slow','\u00d70.75','Normal','\u00d71.25','Fast'];
+function updateFooterNote(){
+  const gArr=GUESSES[S.difficulty]||GUESSES.medium;
+  $('footer-note').innerHTML=`Guesses per clue: ${gArr.join(' \u2192 ')} &nbsp;&middot;&nbsp; Wrong free guesses cost nothing &middot; streak safe<br>Premium guess: &minus;2 pts for one extra attempt &nbsp;&middot;&nbsp; wrong = lose the 2 pts &nbsp;&middot;&nbsp; correct = earn face value<br>Streak resets only on pass or miss`;
+}
+function updateDeck(){
+  const n=CLUE_COUNT[S.difficulty];
+  $('deck-text').textContent=`${n} clues per word. More guesses on early clues, fewer as hints get richer.`;
+}
+
 /* ── Render ── */
-function render(){renderClues();renderIndicator();updateHeader();updateProgress();setFb('');updateBtns()}
-function renderClues(){
-  const area=$('clue-area');area.innerHTML='';
-  for(let i=1;i<=S.clue;i++){
-    const d=document.createElement('div');d.className='clue';d.id='clue-'+(i-1);
-    d.innerHTML=`<div class="clue-label">clue ${i}</div><div class="clue-body">${esc(getClueText(S.word,S.difficulty,i))}</div>`;
+function render(){renderClues(false);renderIndicator();updateHeader();updateProgress();setFb('');updateBtns();updateFooterNote();updateDeck();startSpeedTimer()}
+function renderClues(animateLast){
+  const area=$('clue-area');
+  if(animateLast&&area.children.length===S.clue-1){
+    // Dim all existing clues, append new one with animation
+    area.querySelectorAll('.clue').forEach(c=>c.classList.add('dimmed'));
+    const d=document.createElement('div');
+    d.className='clue new';d.id='clue-'+(S.clue-1);
+    d.innerHTML=`<div class="clue-label">clue ${S.clue}</div><div class="clue-body">${esc(getClueText(S.word,S.difficulty,S.clue))}</div>`;
     area.appendChild(d);
+  } else {
+    // Full rebuild (initial render or after reset)
+    area.innerHTML='';
+    for(let i=1;i<=S.clue;i++){
+      const d=document.createElement('div');
+      d.className='clue'+(i<S.clue?' dimmed':'');
+      d.id='clue-'+(i-1);
+      d.innerHTML=`<div class="clue-label">clue ${i}</div><div class="clue-body">${esc(getClueText(S.word,S.difficulty,i))}</div>`;
+      area.appendChild(d);
+    }
   }
 }
 function renderIndicator(){
-  const gArr=GUESSES[S.difficulty]||GUESSES.medium;
-  const fArr=FV[S.difficulty]||FV.medium;
-  const allowed=gArr[S.clue-1]||1,used=S.freeUsed,rem=allowed-used;
-  const fv=fArr[S.clue-1]||1;
+  const allowed=getEffectiveGuesses(S.clue-1),used=S.freeUsed,rem=allowed-used;
+  const fv=getEffectiveFV(S.clue-1);
   let dots='';for(let i=0;i<allowed;i++)dots+=`<span class="guess-dot${i<used?' used':''}"></span>`;
   $('guess-dots').innerHTML=dots;
   $('guess-value').textContent=rem>0?`${rem} free guess${rem!==1?'es':''} \u00b7 worth ${fv} pt${fv!==1?'s':''}`:`No free guesses left \u00b7 worth ${fv} pt${fv!==1?'s':''}`;
 }
 function updateHeader(){
   $('score').textContent=S.score;$('streak').textContent=S.streak;
+  const bs=$('bank-stat');if(bs)bs.textContent=getBank();
   $('round-label').textContent=`Round ${S.played+1} / ${S.totalRounds}`;
   const p=$('diff-pill');p.textContent=DIFF_LABEL[S.difficulty]||S.difficulty;p.className='pill '+S.difficulty;
   $('srs-pill').style.display=S.inSRS?'inline-block':'none';
@@ -575,8 +731,7 @@ function updateProgress(){
   $('progress-label').textContent=`${S.played} of ${S.totalRounds} rounds complete`;
 }
 function updateBtns(){
-  const gArr=GUESSES[S.difficulty]||GUESSES.medium;
-  const free=(gArr[S.clue-1]||1)-S.freeUsed;
+  const free=getEffectiveGuesses(S.clue-1)-S.freeUsed;
   const maxClues=S.word?getClueCount(S.word,S.difficulty):5;
   $('standard-btn').disabled=S.locked||free<=0;
   $('premium-btn').disabled=S.locked||S.score<2;
@@ -584,45 +739,86 @@ function updateBtns(){
   $('pass-btn').disabled=S.locked;
   $('guess').disabled=S.locked;
   $('round-nav').style.display=S.locked?'flex':'none';
+  $('speed-inline').style.display=S.locked?'flex':'none';
+  $('kbd-hint').style.display=S.locked?'none':'block';
   if(S.locked)$('next-word-btn').textContent=S.played>=S.totalRounds?'See results \u2192':'Next word \u2192';
+  updateLifelinesBar();
 }
 function setFb(t,k='neutral',html=false){const fb=$('feedback');html?fb.innerHTML=t:fb.textContent=t;fb.className='feedback '+(k||'neutral')}
 function flash(type){const c=$('clue-'+(S.clue-1));if(!c)return;c.classList.add('flash-'+type);setTimeout(()=>c.classList.remove('flash-'+type),500)}
 function addPts(n){S.score=Math.max(0,S.score+n)}
-function focus(){setTimeout(()=>$('guess').focus(),40)}
+function focus(){
+  const el=$('guess');if(!el||S.locked)return;
+  // Synchronous focus preserves the user-gesture context on both iOS and Android
+  try{el.focus({preventScroll:true})}catch(e){el.focus()}
+}
+
+/* ── Confetti ── */
+function launchConfetti(){
+  const canvas=$('confetti-canvas');
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  canvas.style.display='block';
+  const ctx=canvas.getContext('2d');
+  const colors=['#2e4a6b','#3a6128','#7a5618','#5a3e0e','#c8a96e','#6baed6','#74c476'];
+  const particles=Array.from({length:90},()=>({
+    x:Math.random()*canvas.width,y:-12,
+    vx:(Math.random()-0.5)*5,vy:Math.random()*3+2,
+    color:colors[Math.floor(Math.random()*colors.length)],
+    size:Math.random()*7+3,rot:Math.random()*360,rotV:(Math.random()-0.5)*9,
+    opacity:1
+  }));
+  let frame,start=null;
+  function draw(ts){
+    if(!start)start=ts;
+    const elapsed=ts-start;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    let alive=false;
+    for(const p of particles){
+      p.x+=p.vx;p.y+=p.vy;p.vy+=0.06;p.rot+=p.rotV;
+      if(elapsed>2200)p.opacity=Math.max(0,p.opacity-0.025);
+      if(p.y<canvas.height+20&&p.opacity>0)alive=true;
+      ctx.save();ctx.globalAlpha=p.opacity;ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle=p.color;ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*0.6);
+      ctx.restore();
+    }
+    if(alive)frame=requestAnimationFrame(draw);
+    else{canvas.style.display='none';ctx.clearRect(0,0,canvas.width,canvas.height)}
+  }
+  cancelAnimationFrame(frame);requestAnimationFrame(draw);
+}
 
 /* ── TTS ── */
-function speakWord(w){if(!('speechSynthesis'in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(w);u.rate=getTTSRate();window.speechSynthesis.speak(u)}
+function speakWord(w){
+  if(!('speechSynthesis'in window))return;
+  window.speechSynthesis.cancel();
+  const say=()=>{const u=new SpeechSynthesisUtterance(w);u.rate=getTTSRate();window.speechSynthesis.speak(u)};
+  // Voices may not be loaded yet (common on first page load)
+  if(speechSynthesis.getVoices().length>0)say();
+  else speechSynthesis.addEventListener('voiceschanged',say,{once:true});
+}
 function ttsBtn(w,showSyl=false){
   const syl=showSyl?`<span class="syl-text">${syllabify(w).join('\u00b7')}</span>`:'';
-  return `${syl}<button class="tts-btn" onclick="speakWord('${esc(w)}')" title="Hear it" aria-label="Hear pronunciation"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></button>`;
+  return `${syl}<button class="tts-btn" data-speak="${esc(w)}" title="Hear it" aria-label="Hear pronunciation"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg></button>`;
 }
 
 /* ── Syllabify ── */
 function syllabify(word){
   const w=word.toLowerCase().replace(/[^a-z]/g,'');
-  const isV=c=>'aeiouy'.includes(c);
-  const n=w.length;
+  const isV=c=>'aeiouy'.includes(c);const n=w.length;
   if(n<=3)return[w];
-  // Collect vowel-group start positions
   const vStarts=[];
   for(let i=0;i<n;i++){if(isV(w[i])&&(i===0||!isV(w[i-1])))vStarts.push(i)}
-  // Adjust for silent final -e (preceded by consonant, more than one vowel group)
   let groups=vStarts.length;
   if(w.endsWith('e')&&n>2&&!isV(w[n-2])&&groups>1)groups--;
   if(groups<=1)return[w];
   const splits=[0];
   for(let g=0;g<vStarts.length-1&&splits.length<groups;g++){
-    let ve=vStarts[g];
-    while(ve+1<n&&isV(w[ve+1]))ve++;           // end of vowel group g
-    const v2=vStarts[g+1];                      // start of next vowel group
-    const cCount=v2-ve-1;                       // consonants between groups
-    if(cCount<=0)continue;                       // diphthong — no split
+    let ve=vStarts[g];while(ve+1<n&&isV(w[ve+1]))ve++;
+    const v2=vStarts[g+1];const cCount=v2-ve-1;if(cCount<=0)continue;
     const sp=cCount===1?ve+1:ve+Math.ceil(cCount/2);
     if(sp>splits[splits.length-1]&&sp<n)splits.push(sp);
   }
-  splits.push(n);
-  return splits.slice(0,-1).map((s,i)=>w.slice(s,splits[i+1]));
+  splits.push(n);return splits.slice(0,-1).map((s,i)=>w.slice(s,splits[i+1]));
 }
 
 /* ── Morphological matching ── */
@@ -635,7 +831,6 @@ function morphMatch(guess,target){
   if(guess===target)return true;
   const gs=stemWord(guess),ts=stemWord(target);
   if(gs.length>=4&&gs===ts)return true;
-  // also try stripping trailing e from stems
   const gse=gs.endsWith('e')?gs.slice(0,-1):gs;
   const tse=ts.endsWith('e')?ts.slice(0,-1):ts;
   return gse.length>=4&&gse===tse;
@@ -644,16 +839,19 @@ function morphMatch(guess,target){
 /* ── Guess handlers ── */
 function handleGuess(){
   if(S.locked)return;
-  if(GUESSES[S.clue-1]-S.freeUsed<=0)return; // no free guesses left
+  const allowedGuesses=getEffectiveGuesses(S.clue-1);
+  if(allowedGuesses-S.freeUsed<=0)return;
   const g=norm($('guess').value);if(!g)return;
   const t=norm(S.word.word);
   if(g===t){flash('good');endRound('correct');return}
   if(morphMatch(g,t)&&g!==t){flash('good');endRound('correct','variant');return}
   if(closeEnough(g,t)){setFb('Very close \u2014 check your spelling.','bad');$('guess').select();return}
-  // Wrong free guess — NO points deducted, NO streak impact
   S.freeUsed++;S.hadWrong=true;$('guess').value='';
-  const gArr=GUESSES[S.difficulty]||GUESSES.medium;
-  const rem=(gArr[S.clue-1]||1)-S.freeUsed;
+  // Relentless: wrong free guess breaks streak
+  if(S.equippedMod==='relentless'){S.streak=0;updateHeader()}
+  // Double Down: extra -5 pts on wrong free guess
+  if(S.equippedMod==='double_down'){addPts(-5);updateHeader()}
+  const rem=allowedGuesses-S.freeUsed;
   const maxClues=getClueCount(S.word,S.difficulty);
   renderIndicator();updateBtns();
   if(rem>0)setFb(`Not quite. ${rem} free guess${rem!==1?'es':''} left on this clue.`,'bad');
@@ -661,49 +859,70 @@ function handleGuess(){
   else setFb('Free guesses used. Next clue, pass, or buy a premium guess (\u22122 pts).','warn');
   focus();
 }
-
 function handlePremium(){
   if(S.locked)return;
   if(S.score<2){setFb('Need at least 2 pts for a premium guess.','warn');return}
   const g=norm($('guess').value);if(!g)return;
   const t=norm(S.word.word);
-  // Deduct 2pts upfront — this is the cost of the attempt
   addPts(-2);S.usedPremium=true;S.hadWrong=true;updateHeader();
   if(g===t){flash('good');endRound('correct');return}
   if(morphMatch(g,t)&&g!==t){flash('good');endRound('correct','variant');return}
   if(closeEnough(g,t)){addPts(2);updateHeader();setFb('Very close \u2014 check your spelling.','bad');$('guess').select();return}
-  // Wrong premium — the 2 pts are spent, that's it
   $('guess').value='';updateBtns();
   setFb('Not quite. The 2 pts are spent — try premium again, take another clue, or pass.','bad');
   focus();
 }
-
 function handleNextClue(){
   const maxClues=getClueCount(S.word,S.difficulty);
   if(S.locked||S.clue>=maxClues)return;
   S.clue++;S.freeUsed=0;
-  renderClues();renderIndicator();setFb('');$('guess').value='';updateBtns();focus();
+  renderClues(true);renderIndicator();setFb('');$('guess').value='';updateBtns();
+  // Scholar's Eye: reveal etymology after clue 2
+  if(S.equippedMod==='scholars_eye'&&S.clue===3){
+    $('etymology').style.display='block';$('ety-body').textContent=S.word.etymology;
+  }
+  startSpeedTimer();focus();
 }
-
 function handlePass(){if(S.locked)return;endRound('passed')}
 
 /* ── End round ── */
 function endRound(outcome,subtype){
-  S.locked=true;S.played++;
-  const fArr=FV[S.difficulty]||FV.medium;
-  const fv=fArr[S.clue-1]||1;
+  S.locked=true;S.played++;stopSpeedTimer();
+  const fv=getEffectiveFV(S.clue-1);
   const w=S.word;
   if(outcome==='correct'){
-    addPts(fv);S.streak++;if(S.streak>S.best)S.best=S.streak;S.solved++;
+    addPts(fv);
+    // Momentum: bonus pts equal to current streak (before increment)
+    if(S.equippedMod==='momentum'&&S.streak>0){addPts(S.streak)}
+    // Iron Clue / Speed Run bonus
+    if(S.equippedMod==='iron_clue')addPts(4);
+    if(S.equippedMod==='speed_run')addPts(3);
+    S.streak++;if(S.streak>S.best)S.best=S.streak;S.solved++;
     if(S.clue===1&&!S.hadWrong)S.perfect++;
     if(S.hadWrong)S.wrongWords.push({word:w.word,tier:S.difficulty,def:getDefClue(w),ety:w.etymology,out:'struggled'});
+    S.clueHits[S.clue]=(S.clueHits[S.clue]||0)+1;
+    if(S.clue===1&&!S.hadWrong)launchConfetti();
   } else {
-    S.streak=0;
+    // Streak shield blocks one reset
+    if(S.streakShielded){S.streakShielded=false;setFb('Streak Shield used! Streak protected.','neutral')}
+    else{
+      // Safety Net: first 2 misses don't break streak
+      if(S.equippedMod==='safety_net'&&outcome==='missed'&&S.safetyMissCount<2){
+        S.safetyMissCount++;
+      } else {S.streak=0}
+    }
     S.wrongWords.push({word:w.word,tier:S.difficulty,def:getDefClue(w),ety:w.etymology,out:outcome});
+    if(outcome==='passed')S.passCount++;else S.missCount++;
   }
+  // Relentless flat bonus (once per session on first completion)
+  if(S.equippedMod==='relentless'&&!S.relentlessBonusEarned){addPts(10);S.relentlessBonusEarned=true}
   S.roundsAt[S.difficulty]=(S.roundsAt[S.difficulty]||0)+1;
   updateHeader();updateProgress();
-  // Adaptive difficulty — normalized perf score 0–1, moves one step at a time
+  // Deposit score pts into bank
+  const earned=S.score-(S._prevScore||0);
+  if(earned>0){const b=getBank()+earned;saveBank(b);S.bank=b;updateBankDisplay()}
+  S._prevScore=S.score;
+  // Adaptive difficulty
   if(!S.inSRS){
     const maxClues=getClueCount(w,S.difficulty);
     const perf=outcome==='correct'?(maxClues-S.clue)/(maxClues-1):0;
@@ -715,19 +934,22 @@ function endRound(outcome,subtype){
       else if(avg<=0.2&&ci>0){S.difficulty=LEVELS[ci-1];S.recent=[];showBanner('down',S.difficulty)}
     }
   }
-  // SRS — keyed by vocab tier (backward compatible)
+  // SRS
   const wk=S.tier+':'+w.word;
   let so=outcome!=='correct'?(outcome==='passed'?'passed':'missed'):S.usedPremium?'premium':(S.clue<=2&&!S.hadWrong?'easy':'good');
   scheduleWord(wk,so);
-  // Feedback — show syllables alongside the revealed word
+  // Feedback
   const we=esc(w.word),tb=ttsBtn(w.word,true);
   if(outcome==='correct'){
     const net=fv-(S.usedPremium?2:0);
     const varNote=subtype==='variant'?' <span style="font-size:13px;color:var(--ink-2)">(variant accepted)</span>':'';
+    const maxClues=getClueCount(w,S.difficulty);
+    showMotivInline(getMotivMsg(S.clue,S.hadWrong,maxClues));
     setFb(`Correct \u2014 <span class="answer-word">${we}</span> ${tb}${varNote}\u00a0+${fv} pts`+(S.usedPremium?` (net ${net>=0?'+':''}${net})`:''),'good',true);
   } else {
     setFb(`The word was <span class="answer-word">${we}</span> ${tb}`+(outcome==='passed'?' (passed)':''),'neutral',true);
   }
+  // Scholar's eye: show etymology now if it wasn't shown mid-round
   $('etymology').style.display='block';$('ety-body').textContent=w.etymology;
   if(outcome==='correct')renderSwap();
   updateBtns();
@@ -735,7 +957,7 @@ function endRound(outcome,subtype){
 
 function nextWord(){
   if(S.played>=S.totalRounds){showEnd();return}
-  clearBanner();$('etymology').style.display='none';
+  stopSpeedTimer();clearBanner();$('etymology').style.display='none';
   $('word-swap-area').innerHTML='';$('word-swap-area').style.display='none';
   $('srs-banner').style.display='none';setFb('');$('guess').value='';
   pickWord();render();focus();
@@ -745,11 +967,73 @@ function nextWord(){
 function showBanner(dir,lv){
   const b=$('level-banner');
   b.className='banner '+(dir==='up'?'level-up':'level-down');
-  const label=DIFF_LABEL[lv]||lv;
-  b.textContent=dir==='up'?`Sharp work \u2014 stepping up to ${label}.`:`Easing back to ${label}.`;
+  b.textContent=dir==='up'?`Sharp work \u2014 stepping up to ${DIFF_LABEL[lv]}.`:`Easing back to ${DIFF_LABEL[lv]}.`;
   b.style.display='block';
 }
 function clearBanner(){$('level-banner').style.display='none'}
+
+/* ── Session chart ── */
+function buildChart(){
+  const data=[];
+  for(let i=1;i<=7;i++){if(S.clueHits[i]>0)data.push({label:`Clue ${i}`,val:S.clueHits[i],cls:''})}
+  if(S.passCount>0)data.push({label:'Passed',val:S.passCount,cls:'cb-pass'});
+  if(S.missCount>0)data.push({label:'Missed',val:S.missCount,cls:'cb-miss'});
+  if(!data.length)return '';
+  const maxVal=Math.max(...data.map(d=>d.val));
+  let bars='',labels='';
+  for(const d of data){
+    const pct=Math.round((d.val/maxVal)*72)+8;
+    bars+=`<div class="chart-bar ${d.cls}" style="height:${pct}%"><span class="chart-num">${d.val}</span></div>`;
+    labels+=`<div class="chart-label">${d.label}</div>`;
+  }
+  return `<div class="end-chart-section"><div class="end-chart-title">How you solved them</div><div class="chart-wrap">${bars}</div><div class="chart-labels">${labels}</div></div>`;
+}
+
+/* ── End screen ── */
+function showEnd(){
+  ['clue-area','guess-indicator','feedback','etymology','word-swap-area','round-nav','srs-banner','level-banner','footer-note','settings-panel','speed-inline'].forEach(id=>{const e=$(id);if(e)e.style.display='none'});
+  ['.input-row','.guess-row','.nav-row','.session-row'].forEach(s=>{const e=document.querySelector(s);if(e)e.style.display='none'});
+  $('kbd-hint').style.display='none';
+  const end=$('end-screen');end.style.display='block';
+  const acc=S.played?Math.round((S.solved/S.played)*100):0;
+  let lp='';for(const lv of LEVELS){const n=S.roundsAt[lv]||0;if(n)lp+=`<span class="pill ${lv}">${DIFF_LABEL[lv]} \u00b7 ${n}</span>`}
+  let wh='';
+  if(S.wrongWords.length){
+    wh=`<div class="wrong-section"><h3>Words to review (${S.wrongWords.length})</h3>`;
+    for(const ww of S.wrongWords){
+      wh+=`<div class="wrong-card ${ww.out}"><div class="wc-head"><span class="wc-word">${esc(ww.word)}</span>${ttsBtn(ww.word,true)}<span class="wc-badge ${ww.out}">${ww.out}</span><span class="pill ${ww.tier}" style="margin-left:auto;font-size:10px">${DIFF_LABEL[ww.tier]||ww.tier}</span><button class="wc-copy" data-word="${esc(ww.word)}">Copy</button></div><div class="wc-def">${esc(ww.def)}</div><div class="wc-ety">${esc(ww.ety)}</div></div>`;
+    }
+    wh+='</div>';
+  } else wh=`<p style="text-align:center;font-family:var(--serif);font-style:italic;color:var(--good);font-size:17px;margin-bottom:2rem">Clean sheet \u2014 no words to review.</p>`;
+  function sc(l,v){return`<div class="stat-card"><div class="stat-card-label">${l}</div><div class="stat-card-value">${v}</div></div>`}
+  end.innerHTML=`<div class="end-title">Session complete</div><div class="end-sub">${S.played} rounds \u00b7 ${acc}% solved \u00b7 ${S.score} pts</div><div class="stats-grid">${sc('Score',S.score)}${sc('Solved',S.solved+'/'+S.played)}${sc('First-clue wins',S.perfect)}${sc('Best streak',S.best)}</div><div class="lvl-pills">${lp}</div>${buildChart()}${wh}<div class="restart-row"><button class="btn-primary" id="restart-btn" style="min-width:140px">Play again</button></div>`;
+  $('restart-btn').onclick=restart;
+}
+
+function endSession(){if(S.played===0&&!confirm('No rounds played — end anyway?'))return;showEnd()}
+
+function restart(){
+  S.difficulty=getStartDiff();
+  S.totalRounds=getTotalRounds();
+  S.queues={easy:shuffle(range(TIERS.easy.length)),medium:shuffle(range(TIERS.medium.length)),hard:shuffle(range(TIERS.hard.length))};
+  S.cursor={easy:0,medium:0,hard:0};
+  Object.assign(S,{score:0,streak:0,best:0,played:0,solved:0,perfect:0,recent:[],
+    roundsAt:{super_easy:0,easy:0,medium:0,hard:0,ultra_hard:0},wrongWords:[],locked:false,
+    clueHits:[0,0,0,0,0,0,0,0],missCount:0,passCount:0,
+    streakShielded:false,safetyMissCount:0,lifelinesUsed:0,relentlessBonusEarned:false,
+    llRevealActive:false,_prevScore:0});
+  const due=getDueWords(),pairs=[];
+  for(const k of shuffle(due)){const ci=k.indexOf(':');if(ci<0)continue;const t=k.slice(0,ci),w=k.slice(ci+1),wo=TIERS[t]?.find(x=>x.word===w);if(wo)pairs.push({tier:t,word:wo})}
+  S.srsQ=pairs;
+  $('end-screen').style.display='none';$('settings-panel').style.display='none';
+  ['clue-area','guess-indicator','feedback','footer-note'].forEach(id=>{const e=$(id);if(e)e.style.display=''});
+  ['.input-row','.nav-row','.session-row'].forEach(s=>{const e=document.querySelector(s);if(e)e.style.display='flex'});
+  const gr=document.querySelector('.guess-row');if(gr)gr.style.display='grid';
+  $('kbd-hint').style.display='block';
+  $('word-swap-area').innerHTML='';$('word-swap-area').style.display='none';$('etymology').style.display='none';
+  if(S.srsQ.length){$('srs-banner').textContent=`Review: ${S.srsQ.length} word${S.srsQ.length!==1?'s':''} due.`;$('srs-banner').style.display='block'}
+  $('guess').value='';pickWord();render();focus();
+}
 
 /* ── Word Swap ── */
 function renderSwap(){
@@ -792,63 +1076,226 @@ async function fetchSwap(word,def){
 function toggleSettings(){
   const p=$('settings-panel');const open=p.style.display==='none';p.style.display=open?'block':'none';
   if(open){
-    refreshDiffBtns();refreshRoundsBtns();
+    refreshDiffPicker();refreshRoundsBtns();
     $('api-key-input').value=getApiKey();
-    $('words-url-input').value=getWordsUrl();
-    const rate=getTTSRate();$('tts-speed').value=rate;$('speed-val').textContent=`\u00d7${rate.toFixed(2).replace(/\.?0+$/,'')}`;
     const s=loadSRS(),ks=Object.keys(s),n=Date.now(),due=ks.filter(k=>s[k].dueDate<=n).length;
     $('srs-note').textContent=ks.length?`${ks.length} word${ks.length!==1?'s':''} tracked \u00b7 ${due} due for review today.`:'No SRS data yet — play a few rounds to start tracking.';
-    updateDbNote();
     applySessionLock();
   }
 }
 function applySessionLock(){
   const inProgress=S.played>0;
   const lockMsg=inProgress?'Locked during a session \u2014 end the session to change.':'';
-  document.querySelectorAll('.diff-opt').forEach(b=>b.disabled=inProgress);
+  document.querySelectorAll('#diff-picker .dp-dot').forEach(b=>b.disabled=inProgress);
   document.querySelectorAll('.rounds-opt').forEach(b=>b.disabled=inProgress);
   $('diff-lock-note').textContent=lockMsg;
   $('rounds-lock-note').textContent=lockMsg;
 }
-function refreshDiffBtns(){document.querySelectorAll('.diff-opt').forEach(b=>b.classList.toggle('active',b.dataset.d===S.difficulty))}
+function refreshDiffPicker(){
+  document.querySelectorAll('#diff-picker .dp-dot').forEach(b=>b.classList.toggle('active',b.dataset.d===S.difficulty));
+  updateDiffCurrent();
+}
+function updateDiffCurrent(){
+  $('diff-current').innerHTML=`${DIFF_LABEL[S.difficulty]} <span class="diff-clue-note">${CLUE_COUNT[S.difficulty]} clues</span>`;
+}
+function refreshSpeedPicker(){
+  const rate=getTTSRate();
+  document.querySelectorAll('#speed-picker .dp-dot').forEach(b=>b.classList.toggle('active',+b.dataset.rate===rate));
+}
+function refreshRoundsBtns(){const r=S.totalRounds;document.querySelectorAll('.rounds-opt').forEach(b=>b.classList.toggle('active',+b.dataset.r===r))}
 
-/* ── End screen ── */
-function showEnd(){
-  ['clue-area','guess-indicator','feedback','etymology','word-swap-area','round-nav','srs-banner','level-banner','footer-note','settings-panel'].forEach(id=>{const e=$(id);if(e)e.style.display='none'});
-  ['.input-row','.guess-row','.nav-row','.session-row'].forEach(s=>{const e=document.querySelector(s);if(e)e.style.display='none'});
-  const end=$('end-screen');end.style.display='block';
-  const acc=S.played?Math.round((S.solved/S.played)*100):0;
-  let lp='';for(const lv of LEVELS){const n=S.roundsAt[lv]||0;if(n)lp+=`<span class="pill ${lv}">${DIFF_LABEL[lv]} \u00b7 ${n}</span>`}
-  let wh='';
-  if(S.wrongWords.length){
-    wh=`<div class="wrong-section"><h3>Words to review (${S.wrongWords.length})</h3>`;
-    for(const ww of S.wrongWords)wh+=`<div class="wrong-card ${ww.out}"><div class="wc-head"><span class="wc-word">${esc(ww.word)}</span>${ttsBtn(ww.word,true)}<span class="wc-badge ${ww.out}">${ww.out}</span><span class="pill ${ww.tier}" style="margin-left:auto;font-size:10px">${DIFF_LABEL[ww.tier]||ww.tier}</span></div><div class="wc-def">${esc(ww.def)}</div><div class="wc-ety">${esc(ww.ety)}</div></div>`;
-    wh+='</div>';
-  } else wh=`<p style="text-align:center;font-family:var(--serif);font-style:italic;color:var(--good);font-size:17px;margin-bottom:2rem">Clean sheet \u2014 no words to review.</p>`;
-  function sc(l,v){return`<div class="stat-card"><div class="stat-card-label">${l}</div><div class="stat-card-value">${v}</div></div>`}
-  end.innerHTML=`<div class="end-title">Session complete</div><div class="end-sub">${S.played} rounds \u00b7 ${acc}% solved \u00b7 ${S.score} pts</div><div class="stats-grid">${sc('Score',S.score)}${sc('Solved',S.solved+'/'+S.played)}${sc('First-clue wins',S.perfect)}${sc('Best streak',S.best)}</div><div class="lvl-pills">${lp}</div>${wh}<div class="restart-row"><button class="btn-primary" id="restart-btn" style="min-width:140px">Play again</button></div>`;
-  $('restart-btn').onclick=restart;
+/* ══════════════════════════════════════════
+   MODIFIER SHOP
+   ══════════════════════════════════════════ */
+const BANK_KEY='wp-bank-v1';
+const EMOD_KEY='wp-emod-v1';
+const getBank=()=>{try{return parseInt(localStorage.getItem(BANK_KEY))||0}catch{return 0}};
+const saveBank=v=>{try{localStorage.setItem(BANK_KEY,v)}catch{}};
+const getEquipped=()=>{try{return localStorage.getItem(EMOD_KEY)||''}catch{return''}};
+const saveEquipped=k=>{try{localStorage.setItem(EMOD_KEY,k)}catch{}};
+
+const MODS={
+  /* ── Pre-session buffs ── */
+  momentum:    {name:'Momentum',   type:'buff',  cost:40, desc:'Each consecutive correct word earns +1 bonus pt (stacks with streak)'},
+  safety_net:  {name:'Safety Net', type:'buff',  cost:55, desc:'First 2 misses this session don\'t break your streak'},
+  scholars_eye:{name:'Scholar\'s Eye',type:'buff',cost:50,desc:'Etymology revealed after clue 2, not just at the end of the round'},
+  double_down: {name:'Double Down',type:'buff',  cost:70, desc:'Clue 1–2 correct = ×2 pts · wrong free guess costs −5 pts extra'},
+  wordsmith:   {name:'Wordsmith',  type:'buff',  cost:90, desc:'All point values +25% this session · stacks with Double Down'},
+  /* ── Pre-session curses ── */
+  iron_clue:   {name:'Iron Clue',  type:'curse', cost:0,  reward:4,  desc:'Only 1 free guess per clue (any difficulty) · earn +4 pts per correct word'},
+  speed_run:   {name:'Speed Run',  type:'curse', cost:0,  reward:3,  desc:'20-second timer per clue · time up = free guesses gone · earn +3 pts per correct word'},
+  relentless:  {name:'Relentless', type:'curse', cost:0,  reward:10, flat:true, desc:'Streak resets on any wrong free guess (not just pass/miss) · earn +10 pts this session'},
+  /* ── In-game lifelines ── */
+  letter_reveal:{name:'Letter Reveal',type:'lifeline',cost:14,desc:'Reveals the first 3 letters of the answer'},
+  context_flare:{name:'Context Flare',type:'lifeline',cost:20,desc:'Preview the word-swap sentence as a hint right now'},
+  free_pass:   {name:'Free Pass',  type:'lifeline',cost:28,desc:'Skip this word · no streak penalty · not added to review list'},
+  streak_shield:{name:'Streak Shield',type:'lifeline',cost:35,desc:'One-time protection: next streak reset is blocked (lasts this session)'},
+};
+
+/* State additions */
+S.bank=0;
+S.equippedMod='';
+S.streakShielded=false;
+S.safetyMissCount=0;
+S.lifelinesUsed=0;
+S.llRevealActive=false;
+S.relentlessBonusEarned=false;
+
+/* ── Effective game values (apply modifier effects) ── */
+function getEffectiveGuesses(clueIdx){
+  const gArr=GUESSES[S.difficulty]||GUESSES.medium;
+  if(S.equippedMod==='iron_clue')return 1;
+  return gArr[clueIdx]||1;
+}
+function getEffectiveFV(clueIdx){
+  const fArr=FV[S.difficulty]||FV.medium;
+  let v=fArr[clueIdx]||1;
+  if(S.equippedMod==='double_down'&&clueIdx<2)v*=2;
+  if(S.equippedMod==='wordsmith')v=Math.round(v*1.25);
+  return v;
 }
 
-function endSession(){if(S.played===0&&!confirm('No rounds played — end anyway?'))return;showEnd()}
+/* ── Speed timer ── */
+let _speedTimer=null,_speedTimeLeft=20;
+function startSpeedTimer(){
+  if(S.equippedMod!=='speed_run'||S.locked)return;
+  stopSpeedTimer();_speedTimeLeft=20;updateTimerUI();
+  $('speed-timer').style.display='flex';
+  _speedTimer=setInterval(()=>{
+    _speedTimeLeft--;updateTimerUI();
+    if(_speedTimeLeft<=0){
+      stopSpeedTimer();S.freeUsed=99;renderIndicator();updateBtns();
+      setFb('Time\'s up! Use a premium guess, take the next clue, or pass.','warn');
+    }
+  },1000);
+}
+function stopSpeedTimer(){
+  clearInterval(_speedTimer);_speedTimer=null;
+  $('speed-timer').style.display='none';
+}
+function updateTimerUI(){
+  const pct=(_speedTimeLeft/20)*100;
+  const f=$('timer-fill');if(f){f.style.width=pct+'%';f.classList.toggle('urgent',_speedTimeLeft<=5)}
+  const c=$('timer-count');if(c)c.textContent=_speedTimeLeft+'s';
+}
 
-function restart(){
-  S.difficulty=getStartDiff();
-  S.totalRounds=getTotalRounds();
-  S.queues={easy:shuffle(range(TIERS.easy.length)),medium:shuffle(range(TIERS.medium.length)),hard:shuffle(range(TIERS.hard.length))};
-  S.cursor={easy:0,medium:0,hard:0};
-  Object.assign(S,{score:0,streak:0,best:0,played:0,solved:0,perfect:0,recent:[],roundsAt:{super_easy:0,easy:0,medium:0,hard:0,ultra_hard:0},wrongWords:[],locked:false});
-  // Reload SRS
-  const due=getDueWords(),pairs=[];
-  for(const k of shuffle(due)){const ci=k.indexOf(':');if(ci<0)continue;const t=k.slice(0,ci),w=k.slice(ci+1),wo=TIERS[t]?.find(x=>x.word===w);if(wo)pairs.push({tier:t,word:wo})}
-  S.srsQ=pairs;
-  $('end-screen').style.display='none';$('settings-panel').style.display='none';
-  ['clue-area','guess-indicator','feedback','footer-note'].forEach(id=>{const e=$(id);if(e)e.style.display=''});
-  ['.input-row','.nav-row','.session-row'].forEach(s=>{const e=document.querySelector(s);if(e)e.style.display='flex'});
-  const gr=document.querySelector('.guess-row');if(gr)gr.style.display='grid';
-  $('word-swap-area').innerHTML='';$('word-swap-area').style.display='none';$('etymology').style.display='none';
-  if(S.srsQ.length){$('srs-banner').textContent=`Review: ${S.srsQ.length} word${S.srsQ.length!==1?'s':''} due.`;$('srs-banner').style.display='block'}
-  $('guess').value='';pickWord();render();focus();
+/* ── Shop render ── */
+function renderShop(){
+  S.bank=getBank();S.equippedMod=getEquipped();
+  $('shop-bank-val').textContent=S.bank;
+  const inSession=S.played>0;
+  const buffs=Object.entries(MODS).filter(([,m])=>m.type==='buff');
+  const curses=Object.entries(MODS).filter(([,m])=>m.type==='curse');
+  const lifelines=Object.entries(MODS).filter(([,m])=>m.type==='lifeline');
+  function cardHTML([key,m]){
+    const isEquipped=S.equippedMod===key;
+    const affordable=m.cost<=S.bank||m.type==='curse';
+    const locked=inSession&&m.type!=='lifeline';
+    const llUsed=m.type==='lifeline'&&S.lifelinesUsed>=2;
+    const llAfford=m.type==='lifeline'&&m.cost>S.bank;
+    let btnLabel=m.type==='lifeline'?`Use (${m.cost} pts)`:isEquipped?'Equipped ✓':m.type==='curse'?(m.cost===0?'Equip (free)':'Equip'):`Equip (${m.cost} pts)`;
+    const btnDisabled=(locked||(m.type!=='curse'&&!affordable&&!isEquipped)||llUsed||llAfford)?'disabled':'';
+    const btnClass=isEquipped?'mod-btn equipped':'mod-btn';
+    const costLabel=m.type==='lifeline'?`${m.cost} pts`:m.type==='curse'?`+${m.reward} pts${m.flat?' flat':'/word'}`:m.cost===0?'Free':`${m.cost} pts`;
+    const costClass=m.type==='curse'?'mod-cost reward':'mod-cost';
+    return `<div class="mod-card ${m.type}${isEquipped?' equipped':''}">
+      <div class="mod-card-top"><span class="mod-name">${m.name}</span><span class="${costClass}">${costLabel}</span></div>
+      <div class="mod-desc">${m.desc}</div>
+      <button class="${btnClass}" data-mod="${key}" ${btnDisabled}>${btnLabel}</button>
+    </div>`;
+  }
+  const lockNote=inSession?'<div class="s-note" style="margin-bottom:10px">Session modifiers lock once you start playing.</div>':'';
+  $('shop-content').innerHTML=`
+    ${lockNote}
+    <div class="mod-section-label">Session Buffs</div>
+    <div class="mod-sub">Equip one before playing. Costs come from your bank.</div>
+    <div class="mod-grid">${buffs.map(cardHTML).join('')}</div>
+    <div class="mod-section-label">Curses</div>
+    <div class="mod-sub">Free to equip. Make the game harder in exchange for bonus pts.</div>
+    <div class="mod-grid">${curses.map(cardHTML).join('')}</div>
+    <div class="mod-section-label">Lifelines</div>
+    <div class="mod-sub">Spend bank pts to activate mid-round. Max 2 per session.</div>
+    <div class="mod-grid">${lifelines.map(cardHTML).join('')}</div>`;
+}
+
+function toggleShop(){
+  const p=$('shop-panel');const open=p.style.display==='none';
+  p.style.display=open?'block':'none';
+  if(open){$('settings-panel').style.display='none';renderShop()}
+}
+
+function handleModClick(key){
+  const m=MODS[key];if(!m)return;
+  S.bank=getBank();
+  if(m.type==='lifeline'){
+    if(S.lifelinesUsed>=2){alert('Max 2 lifelines per session.');return}
+    if(S.bank<m.cost){alert(`Need ${m.cost} pts. Current bank: ${S.bank} pts.`);return}
+    if(!S.locked&&S.played>0)useLifeline(key);
+    else if(S.played===0)alert('Start a session first to use lifelines.');
+    else alert('Lifelines can only be used during an active round (before answering).');
+    return;
+  }
+  // Pre-session modifier
+  if(S.played>0){alert('Session modifiers lock once you start playing.');return}
+  if(S.equippedMod===key){
+    // Unequip
+    S.equippedMod='';saveEquipped('');renderShop();return;
+  }
+  if(m.type!=='curse'&&m.cost>S.bank){alert(`Need ${m.cost} pts. Current bank: ${S.bank} pts.`);return}
+  if(m.type!=='curse'){
+    const newBank=S.bank-m.cost;saveBank(newBank);S.bank=newBank;
+  }
+  S.equippedMod=key;saveEquipped(key);renderShop();updateBankDisplay();
+}
+
+function useLifeline(key){
+  const m=MODS[key];
+  const newBank=S.bank-m.cost;saveBank(newBank);S.bank=newBank;
+  S.lifelinesUsed++;updateBankDisplay();
+  if(key==='letter_reveal'){
+    S.llRevealActive=true;
+    const w=S.word.word;
+    const hint=w.slice(0,3).split('').join(' · ');
+    setFb(`First 3 letters: ${hint}…`,'neutral');
+  } else if(key==='context_flare'){
+    const area=$('word-swap-area');area.style.display='block';
+    area.innerHTML=`<div class="word-swap"><div class="ws-label">Context Flare (hint)</div><div style="font-size:14px;color:var(--ink-2)"><span class="spinner"></span>Generating hint…</div></div>`;
+    const d=getDefClue(S.word);
+    fetchSwap(S.word.word,d).then(sent=>{
+      if(!sent){area.innerHTML=`<div class="word-swap"><div class="ws-label">Context Flare</div><p class="ws-no-key">Couldn't fetch hint. API key needed in Settings.</p></div>`;return}
+      const m2=sent.match(/\[([^\]]+)\]/);
+      const disp=m2?sent.replace(/\[[^\]]+\]/,`<span class="ws-bracket">${esc(m2[1])}</span>`):sent;
+      area.innerHTML=`<div class="word-swap"><div class="ws-label">Context Flare (hint)</div><div class="ws-sentence">${disp}</div><p style="font-size:12px;color:var(--ink-3)">The word fits where the underlined phrase is.</p></div>`;
+    });
+  } else if(key==='free_pass'){
+    // Skip without consequences
+    S.locked=true;S.played++;S.roundsAt[S.difficulty]=(S.roundsAt[S.difficulty]||0)+1;
+    updateHeader();updateProgress();
+    setFb('Word skipped via Free Pass — no penalty.','neutral');
+    $('etymology').style.display='block';$('ety-body').textContent=S.word.etymology;
+    updateBtns();stopSpeedTimer();
+  } else if(key==='streak_shield'){
+    S.streakShielded=true;
+    setFb('Streak Shield active — next streak reset will be blocked.','neutral');
+  }
+  renderShop();updateLifelinesBar();
+}
+
+function updateLifelinesBar(){
+  const bar=$('lifelines-bar');
+  const lifelines=Object.entries(MODS).filter(([,m])=>m.type==='lifeline');
+  if(S.locked||S.played===0||S.lifelinesUsed>=2){bar.style.display='none';return}
+  const affordable=lifelines.filter(([,m])=>m.cost<=S.bank);
+  if(!affordable.length){bar.style.display='none';return}
+  const rem=2-S.lifelinesUsed;
+  bar.innerHTML=`<div class="lifelines-bar"><div class="lifelines-bar-label">Lifelines (${rem} remaining)</div><div class="lifelines-bar-btns">${affordable.map(([k,m])=>`<button class="ll-btn" data-mod="${k}">${m.name} · ${m.cost}pts</button>`).join('')}</div></div>`;
+  bar.style.display='block';
+}
+
+function updateBankDisplay(){
+  const b=getBank();
+  const bs=$('bank-stat');if(bs)bs.textContent=b;
+  const sv=$('shop-bank-val');if(sv)sv.textContent=b;
 }
 
 /* ── Events ── */
@@ -858,47 +1305,51 @@ $('next-clue-btn').onclick=handleNextClue;
 $('pass-btn').onclick=handlePass;
 $('next-word-btn').onclick=nextWord;
 $('settings-btn').onclick=toggleSettings;
+$('shop-btn').onclick=toggleShop;
+$('theme-toggle').onclick=toggleTheme;
 $('end-btn').onclick=endSession;
 $('save-api-btn').onclick=()=>{setApiKey($('api-key-input').value.trim());$('save-api-btn').textContent='Saved \u2713';setTimeout(()=>$('save-api-btn').textContent='Save',1800)};
-$('save-words-url-btn').onclick=async()=>{
-  const url=$('words-url-input').value.trim();
-  setWordsUrl(url);
-  localStorage.removeItem(WORDS_CACHE_KEY); // clear cache so fresh fetch runs
-  $('words-db-note').textContent='Loading\u2026';
-  $('save-words-url-btn').disabled=true;
-  await loadWordsDB();
-  rebuildQueues();
-  $('save-words-url-btn').disabled=false;
-};
 
-// Difficulty — save config; applies at session start (locked mid-session)
-document.querySelectorAll('.diff-opt').forEach(b=>b.onclick=()=>{
-  if(S.played>0)return;
-  setStartDiff(b.dataset.d);
-  S.difficulty=b.dataset.d;
-  refreshDiffBtns();
-  updateHeader();
-});
-
-// Rounds per session — save config; applies at session start (locked mid-session)
-function refreshRoundsBtns(){const r=S.totalRounds;document.querySelectorAll('.rounds-opt').forEach(b=>b.classList.toggle('active',+b.dataset.r===r))}
+// Rounds
 document.querySelectorAll('.rounds-opt').forEach(b=>b.onclick=()=>{
   if(S.played>0)return;
-  const n=+b.dataset.r;
-  setTotalRounds(n);
-  S.totalRounds=n;
-  refreshRoundsBtns();
-  updateHeader();updateProgress();updateBtns();
+  const n=+b.dataset.r;setTotalRounds(n);S.totalRounds=n;
+  refreshRoundsBtns();updateHeader();updateProgress();updateBtns();
 });
 
-// TTS speed
-$('tts-speed').addEventListener('input',e=>{
-  const r=+e.target.value;
-  setTTSRate(r);
-  $('speed-val').textContent=`\u00d7${r.toFixed(2).replace(/\.?0+$/,'')}`;
+// Speed slider
+function refreshSpeedSlider(){refreshSpeedPicker()} // alias kept for safety
+
+document.addEventListener('click',e=>{
+  // TTS buttons
+  const tts=e.target.closest('.tts-btn');
+  if(tts&&tts.dataset.speak){speakWord(tts.dataset.speak);return}
+  // Difficulty dot-picker
+  const dd=e.target.closest('#diff-picker .dp-dot');
+  if(dd&&dd.dataset.d&&!dd.disabled&&S.played===0){
+    const d=dd.dataset.d;setStartDiff(d);S.difficulty=d;
+    refreshDiffPicker();updateHeader();updateFooterNote();updateDeck();return;
+  }
+  // Speed dot-picker
+  const sd=e.target.closest('#speed-picker .dp-dot');
+  if(sd&&sd.dataset.rate){setTTSRate(+sd.dataset.rate);refreshSpeedPicker();return}
+  // Mod cards in shop
+  const mb=e.target.closest('[data-mod]');
+  if(mb&&mb.dataset.mod){handleModClick(mb.dataset.mod);return}
+  // Copy word buttons
+  const copy=e.target.closest('.wc-copy');
+  if(copy&&copy.dataset.word){
+    navigator.clipboard.writeText(copy.dataset.word).then(()=>{
+      copy.textContent='\u2713 Copied';setTimeout(()=>copy.textContent='Copy',1600);
+    }).catch(()=>{});
+  }
 });
 
+// Enter key
 $('guess').addEventListener('keydown',e=>{if(e.key!=='Enter')return;e.preventDefault();if(S.locked){nextWord();return}handleGuess()});
+
+// Fade kbd hint after first keystroke
+$('guess').addEventListener('input',()=>{const h=$('kbd-hint');if(h&&h.style.opacity!=='0'){h.style.opacity='0'}},{once:true});
 
 init();
 </script>
