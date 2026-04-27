@@ -115,7 +115,7 @@ button:disabled{opacity:.35;cursor:not-allowed}
 .btn-ghost:hover:not(:disabled){background:var(--paper-2);border-color:var(--rule-2);color:var(--ink-2)}
 .guess-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
 .nav-row{display:flex;gap:8px;margin-bottom:.75rem}
-.session-row{display:flex;align-items:center;gap:8px}
+.session-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;row-gap:6px}
 .spacer{flex:1}
 .end-link{font-size:13px;color:var(--ink-3);cursor:pointer;background:none;border:none;padding:0;font-family:var(--sans);height:auto;text-decoration:underline;text-underline-offset:3px}
 .end-link:hover{color:var(--ink-2)}
@@ -259,9 +259,6 @@ kbd{display:inline-block;padding:1px 5px;background:var(--paper-2);border:1px so
 .timer-fill.urgent{background:var(--bad)}
 .timer-count{font-family:var(--serif);font-size:13px;color:var(--ink-2);min-width:28px;text-align:right;font-weight:500}
 /* Active mod badge */
-.active-mod-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em}
-.active-mod-badge.buff{background:var(--good-bg);color:var(--good)}
-.active-mod-badge.curse{background:var(--warn-bg);color:var(--warn)}
 @media(max-width:480px){
   .page{padding:2rem 1rem 3rem}
   h1{font-size:36px}
@@ -341,15 +338,41 @@ kbd{display:inline-block;padding:1px 5px;background:var(--paper-2);border:1px so
 .clue.blind-clue{opacity:0.3;pointer-events:none}
 .final-clue-hint{opacity:0.4;font-size:13px;border-left-color:var(--accent)!important}
 
+/* Session timer in header */
+.session-timer{font-family:var(--serif);font-variant-numeric:tabular-nums;font-size:13px;color:var(--ink-3);margin-left:6px;padding:1px 7px;background:var(--paper-2);border-radius:999px;display:inline-block}
+/* Clickable stat card */
+.stat-card.clickable{cursor:pointer;transition:background .15s,border-color .15s;border:1px solid transparent}
+.stat-card.clickable:hover{background:var(--paper-3);border-color:var(--rule-2)}
+.stat-card.clickable::after{content:" \203A";color:var(--ink-3);font-size:14px;margin-left:4px}
+/* History modal */
+.history-panel{margin-top:1.25rem;padding:20px;background:var(--paper-2);border-radius:var(--r);border:1px solid var(--rule-2)}
+.history-panel h3{font-family:var(--serif);font-weight:500;font-size:18px;margin-bottom:.25rem}
+.history-empty{font-family:var(--serif);font-style:italic;color:var(--ink-3);font-size:15px;text-align:center;padding:2rem 0}
+.history-summary{font-size:13px;color:var(--ink-2);margin-bottom:1rem;line-height:1.5}
+.history-chart{display:flex;align-items:flex-end;gap:4px;height:80px;margin-bottom:1rem;padding:6px 0;border-bottom:1px solid var(--rule)}
+.history-bar{flex:1;border-radius:3px 3px 0 0;background:var(--accent);min-height:3px;position:relative;transition:opacity .15s}
+.history-bar:hover{opacity:.75}
+.history-bar .hb-num{position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);font-size:9px;color:var(--ink-3);white-space:nowrap}
+.history-row{display:grid;grid-template-columns:1fr auto auto auto;gap:10px;padding:7px 0;border-bottom:1px solid var(--rule);font-size:13px;align-items:baseline}
+.history-row:last-child{border-bottom:none}
+.history-date{color:var(--ink-2)}
+.history-val{font-family:var(--serif);font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums;text-align:right;min-width:50px}
+.history-acc{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums;text-align:right;min-width:42px}
+.history-meta{font-size:11px;color:var(--ink-3)}
+.history-tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.history-tab{height:30px;padding:0 12px;font-size:12px;background:var(--paper);border:1px solid var(--rule-2);border-radius:999px;cursor:pointer;color:var(--ink-2)}
+.history-tab.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.history-clear{font-size:12px;color:var(--ink-3);background:none;border:none;text-decoration:underline;cursor:pointer;padding:6px 0;height:auto;margin-top:.5rem}
+.history-clear:hover{color:var(--bad)}
 /* ── Modal overlay ── */
 #modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none}
-.settings-panel.modal-open,.shop-panel.modal-open,.lexicon-panel.modal-open{
+.settings-panel.modal-open,.shop-panel.modal-open,.lexicon-panel.modal-open,.history-panel.modal-open{
   position:fixed;top:5vh;left:50%;transform:translateX(-50%);
   width:min(93%,660px);max-height:90vh;overflow-y:auto;z-index:501;
   margin:0!important;display:block!important;
   box-shadow:0 16px 48px rgba(0,0,0,.26)}
 @media(max-width:520px){
-  .settings-panel.modal-open,.shop-panel.modal-open,.lexicon-panel.modal-open{
+  .settings-panel.modal-open,.shop-panel.modal-open,.lexicon-panel.modal-open,.history-panel.modal-open{
     top:0;width:100%;border-radius:0;max-height:100dvh}}
 .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
 .modal-header h3{margin-bottom:0!important}
@@ -404,6 +427,7 @@ kbd{display:inline-block;padding:1px 5px;background:var(--paper-2);border:1px so
         <div class="gh-title">In progress</div>
         <div class="meta-row">
           <span id="round-label">Run 1 / 10</span>
+          <span id="session-timer" class="session-timer" title="Session time">0:00</span>
           <span id="diff-pill" class="pill easy">easy</span>
           <span id="grudge-pill" class="pill grudge" style="display:none">⚔ Grudge Match</span>
           <span id="srs-pill" class="pill review" style="display:none">📚 SRS Review</span>
@@ -446,7 +470,7 @@ kbd{display:inline-block;padding:1px 5px;background:var(--paper-2);border:1px so
     <div class="kbd-hint" id="kbd-hint">Press <kbd>Enter</kbd> to guess &nbsp;&middot;&nbsp; <kbd>Enter</kbd> again to advance</div>
     <div id="guess-wrap" class="guess-row">
       <button id="standard-btn" class="btn-primary">Guess</button>
-      <button id="premium-btn" class="btn-premium">Push (&minus;2 pts)</button>
+      <button id="premium-btn" class="btn-premium">Extra Guess (&minus;2 pts)</button>
     </div>
     <div id="nav-wrap" class="nav-row">
       <button id="next-clue-btn">Next clue</button>
@@ -542,6 +566,11 @@ kbd{display:inline-block;padding:1px 5px;background:var(--paper-2);border:1px so
           <div class="s-head">Spaced repetition</div>
           <div class="s-note" id="srs-note" style="font-size:13px">Loading&hellip;</div>
         </div>
+        <div class="s-sec">
+          <div class="s-head">Performance stats</div>
+          <div class="s-sub">Score, accuracy, first-clue wins and best streak tracked across sessions.</div>
+          <button onclick="closeAllModals();openHistory('score')" style="font-size:13px">📊 View stats history</button>
+        </div>
       </div>
     </div>
     <!-- Lifelines bar -->
@@ -566,6 +595,12 @@ kbd{display:inline-block;padding:1px 5px;background:var(--paper-2);border:1px so
         <div id="lex-list"></div>
       </div>
     </div>
+    <div id="history-panel" style="display:none">
+      <div class="history-panel">
+        <div class="modal-header"><h3>Performance Stats</h3><button class="modal-close-x" onclick="toggleHistory()" title="Close">✕</button></div>
+        <div id="history-content"></div>
+      </div>
+    </div>
     <div id="end-screen" style="display:none"></div>
     <div id="footer-note" class="footer-note"></div>
   </section>
@@ -582,7 +617,6 @@ const MODS={
   /* ── Pre-session buffs ── */
   momentum:    {name:'Momentum',   type:'buff',  cost:40, desc:'Each consecutive correct word earns +1 bonus pt (stacks with streak)'},
   safety_net:  {name:'Safety Net', type:'buff',  cost:55, desc:'First 2 misses this session don\'t break your streak'},
-  scholars_eye:{name:'Scholar\'s Eye',type:'buff',cost:50,desc:'Etymology revealed after clue 2, not just at the end of the round'},
   double_down: {name:'Double Down',type:'buff',  cost:70, desc:'Clue 1–2 correct = ×2 pts · wrong free guess costs −5 pts extra'},
   wordsmith:   {name:'Wordsmith',  type:'buff',  cost:90, desc:'All point values +25% this session · stacks with Double Down'},
   /* ── Pre-session curses ── */
@@ -592,13 +626,12 @@ const MODS={
   /* ── In-game lifelines ── */
   letter_reveal:{name:'Letter Reveal',type:'lifeline',cost:14,desc:'Reveals the first 3 letters of the answer'},
   context_flare:{name:'Context Flare',type:'lifeline',cost:20,desc:'Preview the word-swap sentence as a hint right now'},
-  free_pass:   {name:'Free Pass',  type:'lifeline',cost:28,desc:'Skip this word · no streak penalty · not added to review list'},
+  free_pass:   {name:'Free Pass',  type:'lifeline',cost:28,desc:'Skip this word · no streak penalty · added to review list'},
   streak_shield:{name:'Streak Shield',type:'lifeline',cost:35,desc:'One-time protection: next streak reset is blocked (lasts this session)'},
   /* ── Vows ── */
   blind:        {name:'Blind',        type:'vow', cost:0, desc:'All clues are hidden. 2\xd7 point multiplier on correct answers. A true test of memory.'},
   sudden_death: {name:'Sudden Death', type:'vow', cost:0, desc:'Start with 0 lives. One wrong word ends the run. 2\xd7 point multiplier.'},
   no_bailouts:  {name:'No Bailouts',  type:'vow', cost:0, desc:'Disables the Path to Recovery screen. 1.5\xd7 point multiplier.'},
-  suffering_1:  {name:'Suffering I',  type:'vow', cost:0, desc:'Clues disabled. Double points if correct, no bonus if wrong.'},
   suffering_2:  {name:'Suffering II', type:'vow', cost:0, desc:'Flat 30% point penalty applied at session end if accuracy falls below 60%.'},
   degradation:  {name:'Degradation',  type:'vow', cost:0, desc:'Words you haven\'t seen in 14+ days appear with one fewer clue than normal.'},
 };
@@ -694,7 +727,7 @@ const getThemePref=()=>loadCfg().theme||'';
 const setThemePref=t=>{const c=loadCfg();c.theme=t;saveCfg(c)};
 const WORDS_CACHE_KEY='wp-words-v2';
 const WORDS_CACHE_TTL=7*24*3600*1000;
-const BANK_KEY='wp-bank-v1',EMOD_KEY='wp-emod-v1',ECURSE_KEY='wp-ecurse-v1',EVOW_KEY='wp-evow-v1',ARCHIVE_KEY='wp-archive-v1',HSCORE_KEY='wp-hscore-v1';
+const BANK_KEY='wp-bank-v1',EMOD_KEY='wp-emod-v1',ECURSE_KEY='wp-ecurse-v1',EVOW_KEY='wp-evow-v1',ARCHIVE_KEY='wp-archive-v1',HSCORE_KEY='wp-hscore-v1',HISTORY_KEY='wp-history-v1';
 const getBank=()=>{try{return parseInt(localStorage.getItem(BANK_KEY))||0}catch{return 0}};
 const saveBank=v=>{try{localStorage.setItem(BANK_KEY,String(v))}catch{}};
 const getEquipped=()=>{try{return localStorage.getItem(EMOD_KEY)||''}catch{return''}};
@@ -707,6 +740,9 @@ const getHiScore=()=>{try{return parseInt(localStorage.getItem(HSCORE_KEY))||0}c
 const saveHiScore=v=>{try{localStorage.setItem(HSCORE_KEY,String(v))}catch{}};
 const loadArchive=()=>{try{return JSON.parse(localStorage.getItem(ARCHIVE_KEY)||'{}')}catch{return{}}};
 const saveArchive=d=>{try{localStorage.setItem(ARCHIVE_KEY,JSON.stringify(d))}catch{}};
+const loadHistory=()=>{try{return JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]')}catch{return[]}};
+const saveHistory=d=>{try{localStorage.setItem(HISTORY_KEY,JSON.stringify(d.slice(-100)))}catch{}};
+const clearHistory=()=>{try{localStorage.removeItem(HISTORY_KEY)}catch{}};
 
 function getDueWords(){const s=loadSRS(),n=Date.now();return Object.entries(s).filter(([,v])=>v.dueDate<=n).map(([k])=>k)}
 function scheduleWord(key,out){
@@ -826,11 +862,14 @@ const S={
 };
 
 /* ── Persistence (lexicon + grudge) ── */
-const LEX_KEY='wp-lex-v1',GRUDGE_KEY='wp-grudge-v1';
+const LEX_KEY='wp-lex-v1',GRUDGE_KEY='wp-grudge-v1',SESSION_KEY='wp-session-v1';
 const loadLexicon=()=>{try{return JSON.parse(localStorage.getItem(LEX_KEY)||'{}')}catch{return{}}};
 const saveLexicon=d=>{try{localStorage.setItem(LEX_KEY,JSON.stringify(d))}catch{}};
 const loadGrudge=()=>{try{return JSON.parse(localStorage.getItem(GRUDGE_KEY)||'[]')}catch{return[]}};
 const saveGrudge=d=>{try{localStorage.setItem(GRUDGE_KEY,JSON.stringify(d))}catch{}};
+const getSessionId=()=>{try{return parseInt(localStorage.getItem(SESSION_KEY))||1}catch{return 1}};
+const setSessionId=v=>{try{localStorage.setItem(SESSION_KEY,String(v))}catch{}};
+const incSessionId=()=>{const n=getSessionId()+1;setSessionId(n);return n};
 
 function calcLives(rounds){
   if(rounds<=5)return 2;
@@ -842,7 +881,13 @@ function calcLives(rounds){
 /* ── Init ── */
 async function init(){
   applyTheme(getThemePref());
+  // New page load = new session
+  incSessionId();
   S.bank=getBank();S.equippedMod=getEquipped();S.equippedCurse=getEquippedCurse();S.equippedVow=getEquippedVow();S._prevScore=0;
+  // Drop any equipped mod that no longer exists in MODS (e.g. after removals)
+  if(S.equippedMod&&!MODS[S.equippedMod]){S.equippedMod='';saveEquipped('')}
+  if(S.equippedCurse&&!MODS[S.equippedCurse]){S.equippedCurse='';saveEquippedCurse('')}
+  if(S.equippedVow&&!MODS[S.equippedVow]){S.equippedVow='';saveEquippedVow('')}
   updateBankDisplay();
   S.difficulty=getStartDiff();
   S.totalRounds=getTotalRounds();
@@ -851,8 +896,10 @@ async function init(){
   if(S.equippedVow==='sudden_death'){S.maxLives=0;S.lives=0;}
   S.queues={easy:shuffle(range(TIERS.easy.length)),medium:shuffle(range(TIERS.medium.length)),hard:shuffle(range(TIERS.hard.length))};
   S.cursor={easy:0,medium:0,hard:0};
-  // Load grudge queue
-  const gData=loadGrudge();
+  // Load grudge queue. Skip entries from the immediately preceding session
+  // so a grudge word doesn't surface in the very next session.
+  const _sid=getSessionId();
+  const gData=loadGrudge().filter(g=>!g.sessionId||(_sid-g.sessionId>=2));
   S.grudgeQ=[];
   for(const g of gData){const wo=TIERS[g.tier]?.find(x=>x.word===g.word);if(wo)S.grudgeQ.push({tier:g.tier,word:wo})}
   S.grudgesAttempted=S.grudgeQ.length;
@@ -879,7 +926,10 @@ async function init(){
   refreshDiffPicker();refreshRoundsBtns();
   $('api-key-input').value=getApiKey();
   refreshSpeedPicker();
-  loadWordsDB().then(()=>rebuildQueues());
+  // Wait for the words DB so the first word the player sees is from the full
+  // dataset, not the inline 50-word fallback that would get replaced moments later.
+  try{await loadWordsDB()}catch{}
+  rebuildQueues();
   pickWord();render();renderLives();focus();
 }
 
@@ -912,7 +962,6 @@ function rebuildQueues(){
   if(S.played===0){
     S.queues={easy:shuffle(range(TIERS.easy.length)),medium:shuffle(range(TIERS.medium.length)),hard:shuffle(range(TIERS.hard.length))};
     S.cursor={easy:0,medium:0,hard:0};
-    pickWord();render();
   }
 }
 function countWords(){return TIERS.easy.length+TIERS.medium.length+TIERS.hard.length}
@@ -983,26 +1032,23 @@ function updateDeck(){
 function render(){renderClues(false);renderPool();renderLives();updateHeader();updateProgress();setFb('');updateBtns();updateFooterNote();updateDeck();startSpeedTimer();}
 function renderClues(animateLast){
   const area=$('clue-area');
-  // Blind / Suffering I: hide clue text
-  if(S.equippedVow==='blind'||S.equippedVow==='suffering_1'){
-    area.innerHTML='<div class="clue"><div class="clue-label">clue hidden</div><div class="clue-body" style="color:var(--paper-3);font-style:italic;font-family:var(--serif)">— — —</div></div>';
-    // free_final_clue still shows last clue hint even on blind
-    if(loadArchive().free_final_clue){
-      const total=getClueCount(S.word,S.difficulty);
-      const lastText=getClueText(S.word,S.difficulty,total);
-      const hint=document.createElement('div');
-      hint.className='clue final-clue-hint';
-      hint.innerHTML=`<div class="clue-label">final clue (hint)</div><div class="clue-body">${esc(lastText)}</div>`;
-      area.appendChild(hint);
+  // Blind vow: hide every other clue (the 2nd, 4th, 6th...) so the player
+  // gets *some* signal but has to work between gaps.
+  const blind=S.equippedVow==='blind';
+  function clueHTML(i){
+    const hidden=blind&&i%2===0;
+    if(hidden){
+      return `<div class="clue-label">clue ${i} — hidden (Blind)</div>`+
+             `<div class="clue-body" style="color:var(--ink-3);font-style:italic;font-family:var(--serif)">— — —</div>`;
     }
-    return;
+    return `<div class="clue-label">clue ${i}</div><div class="clue-body">${esc(getClueText(S.word,S.difficulty,i))}</div>`;
   }
   if(animateLast&&area.children.length===S.clue-1){
     // Dim all existing clues, append new one with animation
     area.querySelectorAll('.clue').forEach(c=>c.classList.add('dimmed'));
     const d=document.createElement('div');
     d.className='clue new';d.id='clue-'+(S.clue-1);
-    d.innerHTML=`<div class="clue-label">clue ${S.clue}</div><div class="clue-body">${esc(getClueText(S.word,S.difficulty,S.clue))}</div>`;
+    d.innerHTML=clueHTML(S.clue);
     area.appendChild(d);
   } else {
     // Full rebuild (initial render or after reset)
@@ -1011,7 +1057,7 @@ function renderClues(animateLast){
       const d=document.createElement('div');
       d.className='clue'+(i<S.clue?' dimmed':'');
       d.id='clue-'+(i-1);
-      d.innerHTML=`<div class="clue-label">clue ${i}</div><div class="clue-body">${esc(getClueText(S.word,S.difficulty,i))}</div>`;
+      d.innerHTML=clueHTML(i);
       area.appendChild(d);
     }
     // Free Final Clue archive: append last clue as faded hint (if not already on last clue)
@@ -1098,6 +1144,9 @@ function flash(type){const c=$('clue-'+(S.clue-1));if(!c)return;c.classList.add(
 function addPts(n){S.score=Math.max(0,S.score+n)}
 function focus(){
   const el=$('guess');if(!el||S.locked)return;
+  // Skip auto-focus on touch devices so the on-screen keyboard doesn't pop
+  // every time the player taps Next or answers a word.
+  try{if(window.matchMedia&&window.matchMedia('(hover: none)').matches)return}catch{}
   // Synchronous focus preserves the user-gesture context on both iOS and Android
   try{el.focus({preventScroll:true})}catch(e){el.focus()}
 }
@@ -1188,6 +1237,7 @@ function morphMatch(guess,target){
 /* ── Guess handlers ── */
 function handleGuess(){
   if(S.locked||S.guessesLeft<=0)return;
+  startSessionTimer();
   const g=norm($('guess').value);if(!g)return;
   const t=norm(S.word.word);
   // Precision Buffer archive: first close-enough per run treated as correct
@@ -1209,7 +1259,8 @@ function handleGuess(){
 }
 function handlePremium(){
   if(S.locked)return;
-  if(S.score<2){setFb('Need at least 2 pts for a Push.','warn');return}
+  startSessionTimer();
+  if(S.score<2){setFb('Need at least 2 pts to use Extra Guess.','warn');return}
   const g=norm($('guess').value);if(!g)return;
   const t=norm(S.word.word);
   addPts(-2);S.hadWrong=true;updateHeader();
@@ -1217,20 +1268,17 @@ function handlePremium(){
   if(morphMatch(g,t)&&g!==t){flash('good');endRound('correct','variant');return}
   if(closeEnough(g,t)){addPts(2);updateHeader();setFb('Very close \u2014 check your spelling.','bad');$('guess').select();return}
   $('guess').value='';updateBtns();
-  setFb('Not quite. The 2 pts are spent \u2014 try again, take another clue, or concede.','bad');
+  setFb('Not quite \u2014 the 2 pts are spent. Try again, take another clue, or concede.','bad');
   focus();
 }
-function handleConcede(){if(S.locked)return;S.concedeCount++;endRound('conceded');}
+function handleConcede(){if(S.locked)return;startSessionTimer();S.concedeCount++;endRound('conceded');}
 function handleNextClue(){
   const maxClues=getClueCount(S.word,S.difficulty);
   if(S.locked||S.clue>=maxClues)return;
+  startSessionTimer();
   S.clue++;
   if(S.equippedCurse==='iron_clue'){S.maxGuesses=1;S.guessesLeft=1;}
   renderClues(true);renderPool();setFb('');$('guess').value='';updateBtns();
-  // Scholar's Eye: reveal etymology after clue 2
-  if(S.equippedMod==='scholars_eye'&&S.clue===3){
-    $('etymology').style.display='block';$('ety-body').textContent=S.word.etymology;
-  }
   startSpeedTimer();focus();
 }
 
@@ -1244,7 +1292,6 @@ function endRound(outcome,subtype){
   if(S.equippedCurse==='iron_clue')fv+=4;
   if(S.equippedCurse==='speed_run')fv+=3;
   // Vow effects on fv
-  if(S.equippedVow==='suffering_1'&&outcome==='correct')fv*=2;
   const w=S.word;
   if(outcome==='correct'){
     // Mnemonic Mastery archive: +2 for previously struggled words
@@ -1255,7 +1302,7 @@ function endRound(outcome,subtype){
     if(S.equippedMod==='momentum'&&S.streak>0)addPts(S.streak);
     S.streak++;if(S.streak>S.best)S.best=S.streak;S.solved++;
     if(S.clue===1&&!S.hadWrong)S.perfect++;
-    if(S.hadWrong)S.wrongWords.push({word:w.word,tier:S.tier,def:getDefClue(w),ety:w.etymology,out:'struggled'});
+    if(S.hadWrong&&S.clue>=3)S.wrongWords.push({word:w.word,tier:S.tier,def:getDefClue(w),ety:w.etymology,out:'struggled'});
     S.clueHits[S.clue]=(S.clueHits[S.clue]||0)+1;
     if(S.inGrudge)S.grudgesSolved++;
     updateLexiconEntry(w,S.tier,S.clue);
@@ -1263,14 +1310,16 @@ function endRound(outcome,subtype){
     if(S.clue===1&&!S.hadWrong)launchConfetti();
   } else {
     // Streak shield blocks one reset
+    let _safetyAbsorbed=false;
     if(S.streakShielded){S.streakShielded=false;setFb('Streak Shield used! Streak protected.','neutral')}
     else{
-      if(S.equippedMod==='safety_net'&&outcome==='missed'&&S.safetyMissCount<2){S.safetyMissCount++;}  /* safety_net is a buff */
+      if(S.equippedMod==='safety_net'&&outcome==='missed'&&S.safetyMissCount<2){S.safetyMissCount++;_safetyAbsorbed=true;}  /* safety_net is a buff */
       else{S.streak=0}
     }
     if(S.lives>0){animateLostLife();S.lives--;}
     S.wrongWords.push({word:w.word,tier:S.tier,def:getDefClue(w),ety:w.etymology,out:outcome});
-    addToGrudge({word:w.word,tier:S.tier});
+    // Don't grudge-list misses that safety_net absorbed
+    if(!_safetyAbsorbed)addToGrudge({word:w.word,tier:S.tier});
     if(outcome==='missed')S.missCount++;
     else if(outcome==='conceded')S.passCount++;
     if(S.pitiableActive&&outcome!=='correct')S.trainingWord=w;
@@ -1368,6 +1417,7 @@ function buildChart(){
 /* ── End screen ── */
 function showEnd(){
   closeAllModals();
+  stopSessionTimer();
   const paBtn=$('play-again-top-btn');if(paBtn)paBtn.style.display='none';
   ['clue-area','guess-pool','feedback','etymology','word-swap-area','round-nav','srs-banner','level-banner','grudge-banner','bonus-banner','footer-note','speed-inline','pity-screen'].forEach(id=>{const e=$(id);if(e)e.style.display='none'});
   ['#input-wrap','.guess-row','.nav-row','.session-row'].forEach(s=>{const e=document.querySelector(s)||$(s.replace('#',''));if(e)e.style.display='none'});
@@ -1408,13 +1458,28 @@ function showEnd(){
   if(grudgeRemain>0)grudgeStat+=sc('On Grudge List',grudgeRemain);
   const vowNote=scoreDisplay!==S.score?`<div style="font-family:var(--serif);font-style:italic;font-size:13px;color:var(--warn);margin-bottom:1rem">Vow multiplier applied: raw ${S.score} pts → <strong>${scoreDisplay} pts</strong></div>`:'';
   const hiNote=hiScore>0?`<div class="hi-score-line">All-time best: <strong>${hiScore} pts</strong></div>`:'';
-  end.innerHTML=`<div class="end-title">${esc(title)}</div><div class="end-sub">${S.played} runs \u00b7 ${acc}% solved \u00b7 ${scoreDisplay} pts</div>${hiNote}${vowNote}<div class="stats-grid">${sc('Score',scoreDisplay)}${sc('Solved',S.solved+'/'+S.played)}${sc('First-clue wins',S.perfect)}${sc('Best streak',S.best)}${grudgeStat}</div><div class="lvl-pills">${lp}</div>${buildChart()}${tf}${wh}<div class="restart-row" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;"><button class="btn-ghost" onclick="openModal('shop-panel');renderShop()" style="font-size:13px">&#9881; Configure next run</button><button class="btn-primary" id="restart-btn" style="min-width:140px">&#9654; Play again</button></div>`;
+  // Record this session for the stats history view
+  if(S.played>0){
+    const h=loadHistory();
+    h.push({ts:Date.now(),score:scoreDisplay,raw:S.score,solved:S.solved,played:S.played,perfect:S.perfect,best:S.best,acc,total:S.totalRounds});
+    saveHistory(h);
+  }
+  function scClick(l,v,metric){return `<div class="stat-card clickable" data-stat="${metric}" role="button" tabindex="0" title="Click for history"><div class="stat-card-label">${l}</div><div class="stat-card-value">${v}</div></div>`}
+  end.innerHTML=`<div class="end-title">${esc(title)}</div><div class="end-sub">${S.played} runs \u00b7 ${acc}% solved \u00b7 ${scoreDisplay} pts</div>${hiNote}${vowNote}<div class="stats-grid">${scClick('Score',scoreDisplay,'score')}${scClick('Solved',S.solved+'/'+S.played,'acc')}${scClick('First-clue wins',S.perfect,'perfect')}${scClick('Best streak',S.best,'best')}${grudgeStat}</div><div style="text-align:center;margin-bottom:1.25rem"><button class="btn-ghost" id="view-history-btn" style="font-size:13px">📊 View full stats history</button></div><div class="lvl-pills">${lp}</div>${buildChart()}${tf}${wh}<div class="restart-row" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;"><button class="btn-ghost" onclick="openModal('shop-panel');renderShop()" style="font-size:13px">&#9881; Configure next run</button><button class="btn-primary" id="restart-btn" style="min-width:140px">&#9654; Play again</button></div>`;
+  end.querySelectorAll('.stat-card.clickable[data-stat]').forEach(c=>{
+    c.addEventListener('click',()=>openHistory(c.dataset.stat));
+    c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openHistory(c.dataset.stat)}});
+  });
+  const vhb=$('view-history-btn');if(vhb)vhb.onclick=()=>openHistory('score');
   $('restart-btn').onclick=restart;
 }
 
 function endSession(){closeAllModals();if(S.played===0&&!confirm('No rounds played — end anyway?'))return;showEnd()}
 
 function restart(){
+  // New "Play again" = new session id (used to gate grudge re-appearance)
+  incSessionId();
+  resetSessionTimer();
   S.difficulty=getStartDiff();
   S.totalRounds=getTotalRounds();
   S.equippedMod=getEquipped();S.equippedCurse=getEquippedCurse();S.equippedVow=getEquippedVow();S._prevScore=0;
@@ -1433,8 +1498,9 @@ function restart(){
   S.equippedCurse=getEquippedCurse();
   $('ll-reveal-banner').style.display='none';
   S.bank=getBank();updateBankDisplay();
-  // Reload grudge queue
-  const gData=loadGrudge();
+  // Reload grudge queue (filtered by sessionId — see init for rationale)
+  const _sid=getSessionId();
+  const gData=loadGrudge().filter(g=>!g.sessionId||(_sid-g.sessionId>=2));
   S.grudgeQ=[];
   for(const g of gData){const wo=TIERS[g.tier]?.find(x=>x.word===g.word);if(wo)S.grudgeQ.push({tier:g.tier,word:wo})}
   S.grudgesAttempted=S.grudgeQ.length;
@@ -1480,16 +1546,28 @@ function checkSwap(target){
 }
 async function fetchSwap(word,def){
   const k=getApiKey();if(!k)return null;
+  // Snapshot the current word so a slow response for an old word can't write
+  // into a newer word's UI.
+  const wordAtRequest=word;
   const prompt=`You are helping someone practice vocabulary. The word is "${word}" (${def}).\n\nWrite a single natural sentence using a vague phrase where "${word}" would fit better. Wrap the generic phrase in [square brackets]. Return ONLY the sentence.\n\nExample for "ephemeral": The [short-lived] beauty of the market stalls drew tourists all summer.`;
   try{
-    const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${k}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:90,temperature:0.75}})});
-    if(!r.ok)return null;const d=await r.json();return d.candidates?.[0]?.content?.parts?.[0]?.text?.trim()||null;
+    // gemini-1.5-flash was retired in 2025; gemini-2.5-flash-lite is the GA
+    // low-latency replacement. Pass the API key in a header so it doesn't
+    // leak into URLs / referrers / logs.
+    const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-goog-api-key':k},
+      body:JSON.stringify({contents:[{parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:90,temperature:0.75}})
+    });
+    if(!r.ok)return null;
+    if(S.word&&S.word.word!==wordAtRequest)return null;
+    const d=await r.json();return d.candidates?.[0]?.content?.parts?.[0]?.text?.trim()||null;
   }catch{return null}
 }
 
 /* ── Modal helpers ── */
 function openModal(id){closeAllModals();const p=$(id);if(!p)return;p.style.display='block';const inner=p.firstElementChild;if(inner)inner.classList.add('modal-open');$('modal-backdrop').style.display='block';}
-function closeAllModals(){['settings-panel','shop-panel','lexicon-panel'].forEach(id=>{const p=$(id);if(!p)return;const inner=p.firstElementChild;if(inner)inner.classList.remove('modal-open');p.style.display='none';});$('modal-backdrop').style.display='none';}
+function closeAllModals(){['settings-panel','shop-panel','lexicon-panel','history-panel'].forEach(id=>{const p=$(id);if(!p)return;const inner=p.firstElementChild;if(inner)inner.classList.remove('modal-open');p.style.display='none';});$('modal-backdrop').style.display='none';}
 function isModalOpen(id){const p=$(id);if(!p)return false;const inner=p.firstElementChild;return !!(inner&&inner.classList.contains('modal-open'));}
 /* ── Settings ── */
 function toggleSettings(){
@@ -1551,7 +1629,10 @@ function handlePityChoice(opt){
 function showBonusRound(){
   S.inBonus=true;
   const lex=loadLexicon();
-  const keys=shuffle(Object.keys(lex));
+  // Exclude the word from the round that just finished, otherwise the bonus
+  // can pick exactly the word the player saw a moment ago.
+  const lastKey=S.word?(S.tier+':'+S.word.word):null;
+  const keys=shuffle(Object.keys(lex).filter(k=>k!==lastKey));
   let found=false;
   for(const k of keys){
     const ci=k.indexOf(':');if(ci<0)continue;
@@ -1576,7 +1657,10 @@ function updateLexiconEntry(w,tier,clue){
 }
 function addToGrudge(entry){
   const g=loadGrudge();
-  if(!g.find(x=>x.tier===entry.tier&&x.word===entry.word)){g.push({word:entry.word,tier:entry.tier});saveGrudge(g)}
+  if(!g.find(x=>x.tier===entry.tier&&x.word===entry.word)){
+    g.push({word:entry.word,tier:entry.tier,sessionId:getSessionId()});
+    saveGrudge(g);
+  }
 }
 function removeFromGrudge(key){
   const ci=key.indexOf(':');if(ci<0)return;
@@ -1597,6 +1681,84 @@ function toggleLexicon(){
   if(isModalOpen('lexicon-panel')){closeAllModals();return;}
   openModal('lexicon-panel');
   renderLexicon();
+}
+
+/* ── Stats history ── */
+let _historyMetric='score';
+const HISTORY_METRICS={
+  score:{label:'Score per session',unit:' pts',pick:s=>s.score},
+  acc:{label:'Accuracy per session',unit:'%',pick:s=>s.acc},
+  perfect:{label:'First-clue wins per session',unit:'',pick:s=>s.perfect||0},
+  best:{label:'Best streak per session',unit:'',pick:s=>s.best||0},
+};
+function toggleHistory(){
+  if(isModalOpen('history-panel')){closeAllModals();return}
+  openHistory(_historyMetric);
+}
+function openHistory(metric){
+  _historyMetric=HISTORY_METRICS[metric]?metric:'score';
+  openModal('history-panel');
+  renderHistory();
+}
+function renderHistory(){
+  const data=loadHistory();
+  const c=$('history-content');if(!c)return;
+  if(!data.length){
+    c.innerHTML='<div class="history-empty">No sessions logged yet. Finish a session to start tracking your progress.</div>';
+    return;
+  }
+  const tabs=Object.entries(HISTORY_METRICS).map(([k,m])=>
+    `<button class="history-tab${k===_historyMetric?' active':''}" data-metric="${k}">${esc(m.label.split(' per')[0])}</button>`
+  ).join('');
+  const cur=HISTORY_METRICS[_historyMetric];
+  const recent=data.slice(-30);
+  const vals=recent.map(cur.pick);
+  const maxV=Math.max(...vals,1);
+  const avg=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:0;
+  const peak=Math.max(...vals);
+  const fmtDate=t=>new Date(t).toLocaleDateString(undefined,{month:'short',day:'numeric'});
+  const bars=recent.map(s=>{
+    const v=cur.pick(s);
+    const pct=Math.round((v/maxV)*92)+8;
+    return `<div class="history-bar" style="height:${pct}%" title="${fmtDate(s.ts)} · ${v}${cur.unit}"><span class="hb-num">${v}</span></div>`;
+  }).join('');
+  const rows=data.slice(-30).slice().reverse().map(s=>
+    `<div class="history-row"><div class="history-date">${fmtDate(s.ts)}</div><div class="history-val">${s.score}</div><div class="history-acc">${s.acc}%</div><div class="history-meta">${s.solved}/${s.played}</div></div>`
+  ).join('');
+  c.innerHTML=`
+    <div class="history-tab-row">${tabs}</div>
+    <div class="history-summary">${data.length} session${data.length===1?'':'s'} logged · average ${cur.label.split(' per')[0].toLowerCase()}: <strong>${Math.round(avg*10)/10}${cur.unit}</strong> · peak <strong>${peak}${cur.unit}</strong></div>
+    <div class="history-chart" aria-label="${esc(cur.label)} chart">${bars}</div>
+    <div class="history-summary" style="margin-bottom:.5rem;font-weight:500;color:var(--ink)">Recent sessions</div>
+    <div style="font-size:12px;color:var(--ink-3)">
+      <div class="history-row" style="border-bottom:1px solid var(--rule-2);font-weight:500"><div>Date</div><div class="history-val">Score</div><div class="history-acc">Acc</div><div class="history-meta">Solved</div></div>
+      ${rows}
+    </div>
+    <button class="history-clear" onclick="if(confirm('Erase all stat history? This cannot be undone.')){clearHistory();renderHistory()}">Clear stats history</button>`;
+  c.querySelectorAll('.history-tab').forEach(b=>b.onclick=()=>{_historyMetric=b.dataset.metric;renderHistory()});
+}
+
+/* ── Session timer (counts up while playing) ── */
+let _sessionStart=0,_sessionTickInterval=null;
+function fmtMS(secs){const m=Math.floor(secs/60),s=secs%60;return `${m}:${String(s).padStart(2,'0')}`}
+function tickSessionTimer(){
+  if(!_sessionStart)return;
+  const el=$('session-timer');
+  if(el)el.textContent=fmtMS(Math.floor((Date.now()-_sessionStart)/1000));
+}
+function startSessionTimer(){
+  if(_sessionStart)return;
+  _sessionStart=Date.now();
+  tickSessionTimer();
+  _sessionTickInterval=setInterval(tickSessionTimer,1000);
+}
+function stopSessionTimer(){
+  clearInterval(_sessionTickInterval);_sessionTickInterval=null;
+}
+function resetSessionTimer(){
+  stopSessionTimer();
+  _sessionStart=0;
+  const el=$('session-timer');if(el)el.textContent='0:00';
 }
 
 /* ── Speed timer ── */
@@ -1668,7 +1830,7 @@ function renderShop(){
     let btnLabel=m.type==='lifeline'?`Use (${m.cost} pts)`:isEquipped?'Equipped \u2713':(m.type==='curse'||m.type==='vow')?'Equip (free)':`Equip (${m.cost} pts)`;
     const btnDisabled=(locked||(m.type!=='curse'&&m.type!=='vow'&&!affordable&&!isEquipped)||llUsed||llAfford)?'disabled':'';
     const btnClass=isEquipped?(isVow?'mod-btn vow-equipped':'mod-btn equipped'):'mod-btn';
-    const costLabel=m.type==='lifeline'?`${m.cost} pts`:m.type==='curse'?`+${m.reward} pts${m.flat?' flat':'/word'}`:m.type==='vow'?'Vow (free)':'Free'||`${m.cost} pts`;
+    const costLabel=m.type==='lifeline'?`${m.cost} pts`:m.type==='curse'?`+${m.reward} pts${m.flat?' flat':'/word'}`:m.type==='vow'?'Vow (free)':`${m.cost} pts`;
     const costClass=m.type==='curse'?'mod-cost reward':'mod-cost';
     return `<div class="mod-card ${m.type}${isEquipped?' equipped':''}">
       <div class="mod-card-top"><span class="mod-name">${m.name}</span><span class="${costClass}">${costLabel}</span></div>
@@ -1682,15 +1844,12 @@ function renderShop(){
     <div class="mod-section-label">Session Buffs</div>
     <div class="mod-sub">Equip one before playing. Costs come from your bank.</div>
     <div class="mod-grid">${buffs.map(cardHTML).join('')}</div>
-    <div class="mod-section-label">Curses</div>
-    <div class="mod-sub">Free to equip. Make the game harder in exchange for bonus pts.</div>
-    <div class="mod-grid">${curses.map(cardHTML).join('')}</div>
+    <div class="mod-section-label">Challenges</div>
+    <div class="mod-sub">Free to equip. Curses make the game harder in exchange for bonus pts; vows go further with score multipliers. One vow at a time.</div>
+    <div class="mod-grid">${[...curses,...vows].map(cardHTML).join('')}</div>
     <div class="mod-section-label">Lifelines</div>
     <div class="mod-sub">Spend bank pts to activate mid-round. Max 2 per session.</div>
-    <div class="mod-grid">${lifelines.map(cardHTML).join('')}</div>
-    <div class="mod-section-label">Vows</div>
-    <div class="mod-sub">Free to equip. Maximum difficulty — earn score multipliers. One vow at a time.</div>
-    <div class="mod-grid">${vows.map(cardHTML).join('')}</div>`;
+    <div class="mod-grid">${lifelines.map(cardHTML).join('')}</div>`;
 }
 function renderArchive(){
   const archive=loadArchive(),bank=getBank();
@@ -1754,7 +1913,7 @@ function useLifeline(key){
   S.lifelinesUsed++;
   if(key==='letter_reveal'){
     const w=S.word.word;const hint=w.slice(0,3).split('').join(' · ');
-    const llb=$('ll-reveal-banner');$('ll-reveal-text').innerHTML=`🔤 First 3 letters: <strong>${hint}\u2026</strong>`;if(llb)llb.style.display='flex';
+    const llb=$('ll-reveal-banner');$('ll-reveal-text').innerHTML=`First 3 letters: <strong>${hint}\u2026</strong>`;if(llb)llb.style.display='flex';
     setFb(`First 3 letters: ${hint}\u2026`,'neutral');
   } else if(key==='context_flare'){
     const area=$('word-swap-area');area.style.display='block';
@@ -1820,7 +1979,8 @@ document.addEventListener('click',e=>{
   const dd=e.target.closest('#diff-picker .dp-dot');
   if(dd&&dd.dataset.d&&!dd.disabled&&S.played===0){
     const d=dd.dataset.d;setStartDiff(d);S.difficulty=d;
-    refreshDiffPicker();updateHeader();updateFooterNote();updateDeck();return;
+    refreshDiffPicker();updateHeader();updateFooterNote();updateDeck();
+    pickWord();render();return;
   }
   // Speed dot-picker
   const sd=e.target.closest('#speed-picker .dp-dot');
