@@ -692,7 +692,7 @@ const getWordsUrl=()=>loadCfg().wordsUrl||'https://cnick23.github.io/word-pinpoi
 const setWordsUrl=u=>{const c=loadCfg();c.wordsUrl=u;saveCfg(c)};
 const getThemePref=()=>loadCfg().theme||'';
 const setThemePref=t=>{const c=loadCfg();c.theme=t;saveCfg(c)};
-const WORDS_CACHE_KEY='wp-words-v1';
+const WORDS_CACHE_KEY='wp-words-v2';
 const WORDS_CACHE_TTL=7*24*3600*1000;
 const BANK_KEY='wp-bank-v1',EMOD_KEY='wp-emod-v1',ECURSE_KEY='wp-ecurse-v1',EVOW_KEY='wp-evow-v1',ARCHIVE_KEY='wp-archive-v1',HSCORE_KEY='wp-hscore-v1';
 const getBank=()=>{try{return parseInt(localStorage.getItem(BANK_KEY))||0}catch{return 0}};
@@ -744,6 +744,8 @@ function getClueCount(word,diff){
   }
   return base;
 }
+function clueText(c){return typeof c==='string'?c:(c&&c.content)||''}
+function clueType(c){return typeof c==='string'?'':(c&&c.type)||''}
 function getClueText(word,diff,idx){
   const total=getClueCount(word,diff);
   const contentClues=word.clues.slice(0,-1);
@@ -758,13 +760,13 @@ function getClueText(word,diff,idx){
   const synthNeeded=Math.max(0,total-word.clues.length);
   if(idx>=total){
     if(synthNeeded===2)return synBank[2];
-    return letterClue;
+    return clueText(letterClue);
   }
-  if(idx-1<contentClues.length)return contentClues[idx-1];
+  if(idx-1<contentClues.length)return clueText(contentClues[idx-1]);
   const synIdx=idx-1-contentClues.length;
-  return synBank[synIdx]||letterClue;
+  return synBank[synIdx]||clueText(letterClue);
 }
-function getDefClue(word){return word.clues.find(c=>c.startsWith('Means:'))||word.clues[1]}
+function getDefClue(word){if(word.definition)return word.definition;for(const c of word.clues){const t=clueText(c);if(t.startsWith('Means:'))return t}return clueText(word.clues[1])}
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=0|Math.random()*(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
 const range=n=>Array.from({length:n},(_,i)=>i);
 const norm=s=>s.toLowerCase().trim().replace(/[^a-z]/g,'');
