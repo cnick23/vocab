@@ -2,7 +2,16 @@
 <html lang="en" data-style="arcade">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" content="#09060f" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f0eeff" media="(prefers-color-scheme: light)">
+<meta name="color-scheme" content="dark light">
+<meta name="format-detection" content="telephone=no">
+<!-- iOS PWA / standalone -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Word Pinpoint">
 <title>Word Pinpoint</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -123,7 +132,7 @@ button:disabled{opacity:.35;cursor:not-allowed}
 .s-note{font-size:12px;color:var(--ink-3);margin-top:.5rem;line-height:1.5}
 .s-note a{color:var(--accent)}
 .s-row{display:flex;gap:8px}
-.settings-panel input{font-family:var(--sans);font-size:14px}
+.settings-panel input{font-family:var(--sans);font-size:16px}
 /* Shared dot-picker (difficulty + speed) */
 .dot-picker{display:flex;align-items:flex-start;justify-content:space-between;position:relative;margin-top:8px;padding-bottom:2px}
 .dot-picker::before{content:'';position:absolute;top:9px;left:9px;right:9px;height:2px;background:var(--rule-2);z-index:0}
@@ -382,7 +391,7 @@ kbd{display:inline-block;padding:1px 5px;background:var(--paper-2);border:1px so
 /* ════════════════════════════════════
    V5 ARCADE OVERRIDES
 ════════════════════════════════════ */
-html,body{min-height:100vh;
+html,body{min-height:100vh;min-height:100dvh;
   background-image:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(240,235,255,.018) 3px,rgba(240,235,255,.018) 4px);
   background-attachment:fixed}
 .page{max-width:720px;margin:0 auto;padding:0 0 5rem;display:flex;flex-direction:column}
@@ -1360,6 +1369,330 @@ html[data-style="slate"] .pool-dot.urgent{background:var(--bad)!important}
   border-top: 1px solid var(--rule-2);
 }
 
+/* ══════════════════════════════════════
+   MOBILE OPTIMIZATIONS (iOS + Android)
+   Loaded last so these win the cascade.
+══════════════════════════════════════ */
+
+/* ── Global touch / text behavior ── */
+html{
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+  /* Prevent rubber-band passing through to the document on iOS while still
+     allowing internal scroll regions to scroll. */
+  overscroll-behavior-y:none;
+  /* Smoother momentum scrolling for older iOS. */
+  -webkit-overflow-scrolling:touch;
+  /* Allow font-size scaling when user has Larger Text accessibility on. */
+  -webkit-text-size-adjust:100%;
+}
+body{
+  /* Remove default 300ms tap delay & ugly grey flash. */
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+*{ -webkit-tap-highlight-color:transparent; }
+
+/* Buttons & interactive chrome shouldn't be selectable on long-press,
+   but actual word/clue text and inputs SHOULD be selectable. */
+button,
+.pill,
+.dp-dot,
+.rounds-opt,
+.shop-tab,
+.theme-toggle,
+.modal-close-x,
+.life-icon,
+.pool-dot,
+.guess-dot{
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+}
+.clue-body,
+.wc-word,
+.lex-word,
+.tf-word,
+.answer-word,
+.ws-sentence,
+.etymology,
+.wc-def,
+input,
+textarea{
+  -webkit-user-select:auto;
+  user-select:auto;
+  -webkit-touch-callout:default;
+}
+
+/* ── Prevent iOS Safari zoom on input focus ──
+   Any focusable text input must be ≥16px on iOS or it auto-zooms. */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="search"],
+input[type="number"],
+textarea,
+select{
+  font-size:max(16px, 1rem);
+}
+
+/* ── Hover-only-on-actual-pointers ──
+   Touch devices that don't have a fine pointer report (hover:none).
+   On those devices, "sticky hover" makes a tapped button look stuck.
+   Strip every :hover effect on hover-less devices. */
+@media (hover:none), (pointer:coarse){
+  /* Reset *any* hover restyling — paint defaults instead. */
+  button:hover,
+  button:hover:not(:disabled),
+  .btn-primary:hover:not(:disabled),
+  .btn-ghost:hover:not(:disabled),
+  .btn-danger:hover:not(:disabled),
+  .btn-life:hover:not(:disabled),
+  .btn-end-session:hover:not(:disabled),
+  .theme-toggle:hover:not(:disabled),
+  .wc-copy:hover:not(:disabled),
+  .ll-btn:hover:not(:disabled),
+  .shop-tab:hover:not(.active),
+  .modal-close-x:hover,
+  .pity-card:hover,
+  .stat-card.clickable:hover,
+  #play-again-top-btn:hover:not(:disabled),
+  .history-bar:hover,
+  .end-link:hover,
+  .ws-skip:hover,
+  .history-clear:hover,
+  .ll-reveal-banner .ll-dismiss:hover,
+  .dp-dot:not(:disabled):hover .dp-circle{
+    background:inherit;
+    border-color:inherit;
+    color:inherit;
+    box-shadow:none;
+    filter:none;
+    transform:none;
+    opacity:inherit;
+  }
+  /* Give a clear *active* (pressed) state instead — feels native on touch. */
+  button:active:not(:disabled),
+  .pity-card:active,
+  .stat-card.clickable:active{
+    transform:scale(.97);
+    opacity:.85;
+  }
+}
+
+/* ── Safe-area-inset support (iOS notch / home indicator, Android edge-to-edge) ── */
+.page{
+  padding-left:max(1.25rem, env(safe-area-inset-left));
+  padding-right:max(1.25rem, env(safe-area-inset-right));
+  padding-bottom:max(5rem, calc(5rem + env(safe-area-inset-bottom)));
+}
+/* Sticky masthead must clear the iOS notch / dynamic island */
+.masthead{
+  padding-top:max(12px, calc(12px + env(safe-area-inset-top)));
+  padding-left:max(24px, calc(24px + env(safe-area-inset-left)));
+  padding-right:max(24px, calc(24px + env(safe-area-inset-right)));
+}
+/* Modals that go fullscreen must respect safe areas too */
+@media(max-width:520px){
+  .settings-panel.modal-open,
+  .shop-panel.modal-open,
+  .lexicon-panel.modal-open,
+  .history-panel.modal-open,
+  .instructions-panel.modal-open,
+  .style-picker-panel.modal-open{
+    padding-top:max(20px, calc(20px + env(safe-area-inset-top)));
+    padding-bottom:max(20px, calc(20px + env(safe-area-inset-bottom)));
+    padding-left:max(20px, env(safe-area-inset-left));
+    padding-right:max(20px, env(safe-area-inset-right));
+    /* Use dvh so iOS Safari's collapsing chrome doesn't cut off the bottom. */
+    max-height:100dvh;
+    height:100dvh;
+    overscroll-behavior:contain;
+    -webkit-overflow-scrolling:touch;
+  }
+}
+/* Modal backdrop click-to-close should also cover safe areas */
+#modal-backdrop{ inset:0; }
+
+/* ── Hide the "Press Enter" hint on touch devices (no Enter key) ── */
+@media (hover:none), (pointer:coarse){
+  .kbd-hint{ display:none !important; }
+}
+
+/* ── Better tap target sizing ──
+   iOS HIG = 44pt min, Material = 48dp min. Bring tiny chrome up to 40px+
+   on coarse pointers without changing the desktop look. */
+@media (pointer:coarse){
+  /* Session row icon-buttons (settings, lexicon, shop, theme, help, style) */
+  #settings-btn,
+  #lexicon-btn,
+  #shop-btn,
+  .theme-toggle,
+  #play-again-top-btn{
+    height:40px !important;
+    min-width:40px;
+  }
+  /* The end-session "link" still reads as text but gets a real hitbox */
+  .btn-end-session{
+    min-height:40px !important;
+    padding:6px 12px !important;
+    display:inline-flex;
+    align-items:center;
+  }
+  /* Modal close button */
+  .modal-close-x{
+    width:40px !important;
+    height:40px !important;
+  }
+  /* Dot picker dots (difficulty/speed) — easier to tap */
+  .dp-dot{ padding:8px 0 !important; min-height:44px; }
+  /* Rounds-per-session pill chooser */
+  .rounds-opt{ height:40px; padding:0 18px; }
+  /* Shop tabs */
+  .shop-tab{ padding:12px 16px; min-height:44px; }
+  /* Lifeline buttons */
+  .ll-btn{ height:36px; padding:0 14px; }
+  /* History tab pills */
+  .history-tab{ height:36px; padding:0 14px; }
+  /* Wc-copy small buttons */
+  .wc-copy{ padding:6px 12px; height:auto; min-height:32px; }
+}
+
+/* ── Improved small-screen layout (≤480px) ── */
+@media(max-width:480px){
+  /* The session-row has 8 buttons — let them wrap cleanly. */
+  .session-row{
+    gap:6px;
+    row-gap:8px;
+  }
+  .session-row .spacer{ display:none; }
+  /* Stats grid: 4 stats can be claustrophobic. Allow a 2x2 fall-through. */
+  .gh-stats{
+    flex-wrap:wrap;
+    justify-content:flex-end;
+    gap:14px 18px;
+    row-gap:10px;
+  }
+  /* Don't let the in-progress title hog vertical space */
+  .game-header{ gap:10px; }
+  /* Banner text needs to stay legible at narrow widths */
+  .banner{ font-size:12px; padding:10px 12px; }
+  /* Pool / guess pill row */
+  .guess-pool{ padding:8px 12px; gap:8px; flex-wrap:wrap; row-gap:6px; }
+  .pool-info{ font-size:11px; }
+  /* End-screen stat cards: tighter on narrow */
+  .stats-grid{ grid-template-columns:repeat(2, 1fr); gap:8px; }
+  .stat-card{ padding:.75rem .875rem !important; }
+  .stat-card-value{ font-size:22px !important; }
+  /* Modal panel internal padding feels generous on phones */
+  .settings-panel.modal-open,
+  .shop-panel.modal-open,
+  .lexicon-panel.modal-open,
+  .history-panel.modal-open,
+  .instructions-panel.modal-open,
+  .style-picker-panel.modal-open{
+    padding:18px;
+  }
+  .settings-panel,
+  .shop-panel,
+  .lexicon-panel,
+  .history-panel{ padding:16px !important; }
+  /* Mod cards stack 1-up (already in base 480 query, but reinforce) */
+  .mod-grid{ grid-template-columns:1fr; }
+  /* Style-picker thumbnails */
+  .sp-grid{ grid-template-columns:1fr 1fr !important; gap:10px !important; }
+  /* Word-swap drill buttons */
+  .ws-input-row{ flex-direction:column; }
+  .ws-input-row > *{ width:100%; }
+  /* Lexicon entries wrap definition under word */
+  .lex-entry{ flex-direction:column; gap:2px; padding:10px 0; }
+  .lex-word{ min-width:0 !important; }
+  .lex-meta{ text-align:left !important; }
+  /* History rows — keep readable */
+  .history-row{ font-size:12px; gap:8px; }
+}
+
+/* ── Very small phones (≤360px: small Androids, iPhone SE 1st gen) ── */
+@media(max-width:360px){
+  .game{ padding:0 12px !important; }
+  .masthead{ padding:10px 14px !important; gap:10px !important; }
+  h1{ font-size:12px !important; letter-spacing:.12em !important; }
+  .clue{ padding:14px 16px !important; }
+  .clue-body{ font-size:16px !important; line-height:1.55 !important; }
+  .stat-value{ font-size:18px !important; }
+  .gh-stats{ gap:10px 14px; }
+  .stats-grid{ grid-template-columns:1fr 1fr; }
+  .nav-row{ flex-wrap:wrap; }
+  /* Shop / settings even tighter */
+  .settings-panel,.shop-panel,.lexicon-panel,.history-panel{ padding:14px !important; }
+  .sp-grid{ grid-template-columns:1fr !important; }
+  /* Title in masthead can shed the trailing tagline span */
+  h1 span{ display:none !important; }
+}
+
+/* ── Landscape phones (avoid the masthead eating half the viewport) ── */
+@media (max-height:500px) and (orientation:landscape){
+  .page{ padding-bottom:1.5rem; }
+  .masthead{ position:static; }
+  .clue-body{ font-size:17px; }
+  .clue{ padding:14px 18px !important; }
+  .stats-grid{ grid-template-columns:repeat(4, 1fr); }
+}
+
+/* ── Modal scroll-lock (when a modal is open, page beneath shouldn't scroll) ── */
+body.modal-locked{
+  overflow:hidden;
+  position:fixed;
+  inset:0;
+  width:100%;
+}
+
+/* ── Reduced motion respect (Apple/Android both honor this) ── */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+    scroll-behavior:auto !important;
+  }
+  /* Keep the score-pulse visible but not seizure-y */
+  .score-pulse{ animation:none !important; }
+}
+
+/* ── iOS form input cosmetic fixes ── */
+input[type="text"],
+input[type="password"]{
+  -webkit-appearance:none;
+  appearance:none;
+  border-radius:var(--r); /* iOS rounds inputs by default; lock to ours */
+}
+/* iOS yellow/blue autofill background is jarring on dark themes */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus{
+  -webkit-text-fill-color:var(--ink);
+  -webkit-box-shadow:0 0 0 1000px var(--paper-2) inset;
+  caret-color:var(--ink);
+  transition:background-color 9999s ease-in-out 0s;
+}
+
+/* ── Modal panels: contain scrolling so iOS doesn't bounce the body ── */
+.settings-panel.modal-open,
+.shop-panel.modal-open,
+.lexicon-panel.modal-open,
+.history-panel.modal-open,
+.instructions-panel.modal-open,
+.style-picker-panel.modal-open{
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+
+/* ── Fixed canvas should fill the *visual* viewport on iOS ── */
+#confetti-canvas{
+  height:100vh;
+  height:100dvh;
+}
+
 </style>
 </head>
 <body>
@@ -1415,7 +1748,7 @@ html[data-style="slate"] .pool-dot.urgent{background:var(--bad)!important}
     </div>
     <div id="input-wrap">
     <div class="input-row">
-      <input id="guess" type="text" placeholder="Type your guess&hellip;" autocomplete="off" autocapitalize="none" spellcheck="false">
+      <input id="guess" type="text" placeholder="Type your guess&hellip;" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="text" enterkeyhint="go">
     </div>
     </div>
     <div class="kbd-hint" id="kbd-hint">Press <kbd>Enter</kbd> to guess &nbsp;&middot;&nbsp; <kbd>Enter</kbd> again to advance</div>
@@ -2187,13 +2520,46 @@ function updateBtns(){
 function setFb(t,k='neutral',html=false){const fb=$('feedback');html?fb.innerHTML=t:fb.textContent=t;fb.className='feedback '+(k||'neutral')}
 function flash(type){const c=$('clue-'+(S.clue-1));if(!c)return;c.classList.add('flash-'+type);setTimeout(()=>c.classList.remove('flash-'+type),500)}
 function addPts(n){S.score=Math.max(0,S.score+n)}
+
+/* ── Touch detection ──
+   On touch-primary devices we never want to programmatically focus the
+   guess input, because that pops the on-screen keyboard. We also actively
+   blur on state-transitions (Next clue / Next word) so any keyboard that
+   was raised by a prior Enter press dismisses cleanly.
+   We use multiple signals because no single one is reliable across all
+   platforms — iPads with trackpads, Android in-app webviews, and Samsung
+   DeX can all report inconsistent matchMedia values. */
+function isTouchDevice(){
+  try{
+    if(window.matchMedia){
+      if(window.matchMedia('(hover: none)').matches) return true;
+      if(window.matchMedia('(pointer: coarse)').matches) return true;
+    }
+  }catch{}
+  try{
+    if('ontouchstart' in window) return true;
+    if((navigator.maxTouchPoints||0) > 0) return true;
+  }catch{}
+  return false;
+}
+
 function focus(){
   const el=$('guess');if(!el||S.locked)return;
-  // Skip auto-focus on touch devices so the on-screen keyboard doesn't pop
-  // every time the player taps Next or answers a word.
-  try{if(window.matchMedia&&window.matchMedia('(hover: none)').matches)return}catch{}
-  // Synchronous focus preserves the user-gesture context on both iOS and Android
+  // On touch devices: never auto-focus. If the input is currently focused
+  // (e.g. user just submitted via the on-screen keyboard's "Go"), blur it
+  // so the keyboard dismisses. Player manually re-taps the input to type.
+  if(isTouchDevice()){
+    try{ if(document.activeElement===el) el.blur(); }catch{}
+    return;
+  }
+  // Desktop: synchronous focus preserves the user-gesture context.
   try{el.focus({preventScroll:true})}catch(e){el.focus()}
+}
+
+/* Helper: select-text-and-focus, but skip on touch (would re-pop keyboard). */
+function selectGuessIfDesktop(){
+  if(isTouchDevice()) return;
+  try{ $('guess').select() }catch{}
 }
 
 /* ── Confetti ── */
@@ -2291,7 +2657,7 @@ function handleGuess(){
   }
   if(g===t){flash('good');endRound('correct');return}
   if(morphMatch(g,t)&&g!==t){flash('good');endRound('correct','variant');return}
-  if(closeEnough(g,t)){setFb('Very close \u2014 check your spelling.','bad');$('guess').select();return}
+  if(closeEnough(g,t)){setFb('Very close \u2014 check your spelling.','bad');selectGuessIfDesktop();return}
   S.guessesLeft--;S.hadWrong=true;$('guess').value='';
   // Relentless: wrong free guess breaks streak
   if(S.equippedCurse==='relentless'){S.streak=0;updateHeader()}
@@ -2311,7 +2677,7 @@ function handlePremium(){
   addPts(-2);S.hadWrong=true;updateHeader();
   if(g===t){flash('good');endRound('correct');return}
   if(morphMatch(g,t)&&g!==t){flash('good');endRound('correct','variant');return}
-  if(closeEnough(g,t)){addPts(2);updateHeader();setFb('Very close \u2014 check your spelling.','bad');$('guess').select();return}
+  if(closeEnough(g,t)){addPts(2);updateHeader();setFb('Very close \u2014 check your spelling.','bad');selectGuessIfDesktop();return}
   $('guess').value='';updateBtns();
   setFb('Not quite \u2014 the 2 pts are spent. Try again, take another clue, or concede.','bad');
   focus();
@@ -2577,16 +2943,17 @@ async function startSwap(){
   const m=sent.match(/\[([^\]]+)\]/);
   if(!m){area.innerHTML=`<div class="word-swap"><div class="ws-label">Word Swap Drill</div><p class="ws-no-key">Unexpected format. <button class="ws-skip" id="ws-retry">Retry</button></p></div>`;$('ws-retry').onclick=startSwap;return}
   const disp=sent.replace(/\[[^\]]+\]/,`<span class="ws-bracket">${esc(m[1])}</span>`);
-  area.innerHTML=`<div class="word-swap"><div class="ws-label">Word Swap Drill</div><div class="ws-sentence">${disp}</div><p class="ws-hint">Replace the underlined phrase with the word you just learned.</p><div class="ws-input-row"><input type="text" id="ws-in" placeholder="Your word\u2026" autocomplete="off" autocapitalize="none" spellcheck="false" style="font-family:var(--serif);font-size:16px"><button id="ws-check">Check</button></div><div id="ws-fb" class="ws-fb"></div><button class="ws-skip" id="ws-skip">Skip</button></div>`;
+  area.innerHTML=`<div class="word-swap"><div class="ws-label">Word Swap Drill</div><div class="ws-sentence">${disp}</div><p class="ws-hint">Replace the underlined phrase with the word you just learned.</p><div class="ws-input-row"><input type="text" id="ws-in" placeholder="Your word\u2026" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="text" enterkeyhint="done" style="font-family:var(--serif);font-size:16px"><button id="ws-check">Check</button></div><div id="ws-fb" class="ws-fb"></div><button class="ws-skip" id="ws-skip">Skip</button></div>`;
   $('ws-check').onclick=()=>checkSwap(w);
   $('ws-skip').onclick=()=>area.style.display='none';
   $('ws-in').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();checkSwap(w)}};
-  setTimeout(()=>$('ws-in').focus(),40);
+  // Auto-focus only on desktop; on touch the player taps the input to open the keyboard.
+  if(!isTouchDevice()){ setTimeout(()=>$('ws-in').focus(),40); }
 }
 function checkSwap(target){
   const inp=norm($('ws-in').value),fb=$('ws-fb');if(!inp)return;
   if(inp===norm(target)){fb.className='ws-fb good';fb.textContent=`Well done \u2014 "${target}" fits perfectly.`;$('ws-check').disabled=true;$('ws-in').disabled=true}
-  else if(closeEnough(inp,norm(target))){fb.className='ws-fb bad';fb.textContent='Almost \u2014 check your spelling.';$('ws-in').select()}
+  else if(closeEnough(inp,norm(target))){fb.className='ws-fb bad';fb.textContent='Almost \u2014 check your spelling.';if(!isTouchDevice()){try{$('ws-in').select()}catch{}}}
   else{fb.className='ws-fb bad';fb.textContent=`Not quite \u2014 the word is "${target}".`;$('ws-check').disabled=true;$('ws-in').disabled=true}
 }
 async function fetchSwap(word,def){
@@ -2611,8 +2978,8 @@ async function fetchSwap(word,def){
 }
 
 /* ── Modal helpers ── */
-function openModal(id){closeAllModals();const p=$(id);if(!p)return;p.style.display='block';const inner=p.firstElementChild;if(inner)inner.classList.add('modal-open');$('modal-backdrop').style.display='block';}
-function closeAllModals(){['settings-panel','shop-panel','lexicon-panel','history-panel','instructions-panel','style-picker-panel'].forEach(id=>{const p=$(id);if(!p)return;const inner=p.firstElementChild;if(inner)inner.classList.remove('modal-open');p.style.display='none';});$('modal-backdrop').style.display='none';}
+function openModal(id){closeAllModals();const p=$(id);if(!p)return;p.style.display='block';const inner=p.firstElementChild;if(inner)inner.classList.add('modal-open');$('modal-backdrop').style.display='block';document.body.classList.add('modal-locked');}
+function closeAllModals(){['settings-panel','shop-panel','lexicon-panel','history-panel','instructions-panel','style-picker-panel'].forEach(id=>{const p=$(id);if(!p)return;const inner=p.firstElementChild;if(inner)inner.classList.remove('modal-open');p.style.display='none';});$('modal-backdrop').style.display='none';document.body.classList.remove('modal-locked');}
 function isModalOpen(id){const p=$(id);if(!p)return false;const inner=p.firstElementChild;return !!(inner&&inner.classList.contains('modal-open'));}
 /* ── Settings ── */
 function toggleSettings(){
